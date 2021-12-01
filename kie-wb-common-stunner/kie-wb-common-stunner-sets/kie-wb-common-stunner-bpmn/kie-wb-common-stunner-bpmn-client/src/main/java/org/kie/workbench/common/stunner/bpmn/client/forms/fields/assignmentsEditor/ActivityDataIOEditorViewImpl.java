@@ -27,7 +27,9 @@ import com.google.gwt.user.client.Event;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Container;
+import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Row;
+import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -61,6 +63,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public static final int EXPRESSION_MAX_DISPLAY_LENGTH = 65;
 
+    public Row SmartCLIDERow;
+
     public ActivityDataIOEditorViewImpl() {
         super();
     }
@@ -81,6 +85,30 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         outputAssignmentsWidget.setAllowDuplicateNames(true,
                                                        "");
         column.add(outputAssignmentsWidget.getWidget());
+
+
+        /**SmartCLIDE addition**/
+        //add new ui
+        SmartCLIDERow = new Row();
+        SmartCLIDERow.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        final Column SmartCLIDEColumn = new Column(ColumnSize.MD_12);
+        SmartCLIDERow.add(SmartCLIDEColumn);
+        Label label = new Label("SmartCLIDE service discovery");
+        label.setPull(Pull.LEFT);
+        SmartCLIDEColumn.add(label);
+        TextArea textArea = new TextArea();
+        SmartCLIDEColumn.add(textArea);
+        Button btnSearch = new Button("Search");
+        btnSearch.setType(ButtonType.PRIMARY);
+        btnSearch.setPull(Pull.LEFT);
+        btnSearch.addClickHandler(clickEvent -> {
+            textArea.setText("Search");
+        });
+        SmartCLIDEColumn.add(btnSearch);
+        container.add(SmartCLIDERow);
+        /**SmartCLIDE addition**/
+
+
         final Row btnRow = new Row();
         btnRow.getElement().getStyle().setMarginTop(10,
                                                     Style.Unit.PX);
