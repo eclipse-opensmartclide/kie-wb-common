@@ -235,6 +235,8 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         doCallRealMethod().when(endNoneEvent).hasOutputVars();
         doCallRealMethod().when(endNoneEvent).isSingleOutputVar();
         doCallRealMethod().when(activityDataIOEditor).configureDialog(any(),
+                                                                      anyString(),
+                                                                      anyString(),
                                                                       anyBoolean(),
                                                                       anyBoolean(),
                                                                       anyBoolean(),
@@ -288,6 +290,8 @@ public class AssignmentsEditorWidgetTest extends AssignmentBaseTest {
         widget.showDataIOEditor(null);
 
         verify(activityDataIOEditor).configureDialog(taskNameCaptor.capture(),
+                                                     "",
+                                                     "",
                                                      hasInputVarsCaptor.capture(),
                                                      isSingleInputVarCaptor.capture(),
                                                      hasOutputVarsCaptor.capture(),

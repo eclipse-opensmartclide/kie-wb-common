@@ -54,6 +54,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.DataObject;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOModel;
 import org.kie.workbench.common.stunner.bpmn.util.DataObjectUtils;
+import org.kie.workbench.common.stunner.bpmn.workitem.CustomTask;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -339,6 +340,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     public void showDataIOEditor(final String datatypes) {
         String taskName = getTaskName();
+        String taskDocumentation = getTaskDocumentation();
+        String taskCustomName = getTaskCustomName();
         String processvars = getProcessVariables();
 
         Map<String, String> assignmentsProperties = AssignmentParser.parseAssignmentsInfo(assignmentsInfo);
@@ -404,6 +407,8 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
                                                          .distinct()
                                                          .collect(Collectors.toList()));
         activityDataIOEditor.configureDialog(taskName,
+                                             taskDocumentation,
+                                             taskCustomName,
                                              hasInputVars,
                                              isSingleInputVar,
                                              hasOutputVars,
@@ -413,6 +418,32 @@ public class AssignmentsEditorWidget extends Composite implements HasValue<Strin
 
     public void setReadOnly(final boolean readOnly) {
         activityDataIOEditor.setReadOnly(readOnly);
+    }
+
+    protected String getTaskCustomName() {
+        String taskCustomName = "";
+        if (bpmnModel instanceof CustomTask) {
+            CustomTask task = (CustomTask) bpmnModel;
+            if (task.getGeneral() != null && task.getGeneral().getName() != null &&
+                    task.getGeneral().getName().getValue() != null && task.getGeneral().getName().getValue().length() > 0 &&
+                    task.getGeneral().getDocumentation() != null && task.getGeneral().getDocumentation().getValue() != null &&
+                    task.getGeneral().getDocumentation().getValue().length() > 0) {
+                taskCustomName = task.getName();
+            }
+        }
+        return taskCustomName;
+    }
+
+    protected String getTaskDocumentation() {
+        String taskCustomName = "";
+        if (bpmnModel instanceof CustomTask) {
+            CustomTask task = (CustomTask) bpmnModel;
+            if (task.getGeneral() != null && task.getGeneral().getDocumentation() != null &&
+                    task.getGeneral().getDocumentation().getValue() != null && task.getGeneral().getDocumentation().getValue().length() > 0) {
+                taskCustomName = task.getGeneral().getDocumentation().getValue();
+            }
+        }
+        return taskCustomName;
     }
 
     protected String getTaskName() {

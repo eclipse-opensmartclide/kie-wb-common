@@ -142,6 +142,8 @@ public class ActivityDataIOEditorTest {
     @Test
     public void testConfigureDialogBoolean() {
         ioEditor.configureDialog("task name",
+                                 "",
+                                 "",
                                  true,
                                  false,
                                  true,
@@ -151,6 +153,8 @@ public class ActivityDataIOEditorTest {
         verify(ioEditorView).setOutputAssignmentsVisibility(true);
         verify(ioEditorView).setIsOutputAssignmentSingleVar(false);
         ioEditor.configureDialog("task name",
+                                 "",
+                                 "",
                                  false,
                                  true,
                                  false,
@@ -164,6 +168,8 @@ public class ActivityDataIOEditorTest {
     @Test
     public void testConfigureDialogTaskNameEmpty() {
         ioEditor.configureDialog("",
+                                 "",
+                                 "",
                                  true,
                                  true,
                                  true,
@@ -171,12 +177,14 @@ public class ActivityDataIOEditorTest {
         verify(ioEditorView,
                times(1)).setDefaultViewTitle();
         verify(ioEditorView,
-               never()).setCustomViewTitle(anyString());
+               never()).setCustomViewTitle(anyString(),anyString(),anyString());
     }
 
     @Test
     public void testConfigureDialogTaskNameNull() {
         ioEditor.configureDialog(null,
+                                 null,
+                                 null,
                                  true,
                                  true,
                                  true,
@@ -184,18 +192,20 @@ public class ActivityDataIOEditorTest {
         verify(ioEditorView,
                times(1)).setDefaultViewTitle();
         verify(ioEditorView,
-               never()).setCustomViewTitle(anyString());
+               never()).setCustomViewTitle(anyString(),anyString(),anyString());
     }
 
     @Test
     public void testConfigureDialogTaskNameCustom() {
         ioEditor.configureDialog("abc",
+                                 "abc",
+                                 "abc",
                                  true,
                                  true,
                                  true,
                                  true);
         verify(ioEditorView,
-               times(1)).setCustomViewTitle("abc");
+               times(1)).setCustomViewTitle("abc","abc","abc");
         verify(ioEditorView,
                never()).setDefaultViewTitle();
     }

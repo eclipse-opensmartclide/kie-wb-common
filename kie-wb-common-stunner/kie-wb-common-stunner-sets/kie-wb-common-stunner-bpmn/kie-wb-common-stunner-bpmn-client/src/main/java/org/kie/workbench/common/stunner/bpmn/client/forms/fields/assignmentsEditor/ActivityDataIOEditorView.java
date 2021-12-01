@@ -43,7 +43,7 @@ public interface ActivityDataIOEditorView {
 
     void showView();
 
-    void setCustomViewTitle(final String view);
+    void setCustomViewTitle(final String view, final String view2, final String view3);
 
     void setDefaultViewTitle();
 

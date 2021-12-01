@@ -65,6 +65,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public Row SmartCLIDERow;
 
+    public String taskDocumentation;
+
     public ActivityDataIOEditorViewImpl() {
         super();
     }
@@ -91,6 +93,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         //add new ui
         SmartCLIDERow = new Row();
         SmartCLIDERow.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        SmartCLIDERow.getElement().getStyle().setDisplay(Style.Display.NONE);
         final Column SmartCLIDEColumn = new Column(ColumnSize.MD_12);
         SmartCLIDERow.add(SmartCLIDEColumn);
         Label label = new Label("SmartCLIDE service discovery");
@@ -102,7 +105,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnSearch.setType(ButtonType.PRIMARY);
         btnSearch.setPull(Pull.LEFT);
         btnSearch.addClickHandler(clickEvent -> {
-            textArea.setText("Search");
+            textArea.setText(this.taskDocumentation);
         });
         SmartCLIDEColumn.add(btnSearch);
         container.add(SmartCLIDERow);
@@ -133,8 +136,16 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     }
 
     @Override
-    public void setCustomViewTitle(final String name) {
+    public void setCustomViewTitle(final String name, final String documentation, final String taskCustomName) {
         setTitle(name + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
+
+        /**SmartCLIDE addition**/
+        //show only for Rest tasks and get description
+        if(taskCustomName.equals("Rest")) {
+            SmartCLIDERow.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            this.taskDocumentation = documentation;
+        }
+        /**SmartCLIDE addition**/
     }
 
     @Override

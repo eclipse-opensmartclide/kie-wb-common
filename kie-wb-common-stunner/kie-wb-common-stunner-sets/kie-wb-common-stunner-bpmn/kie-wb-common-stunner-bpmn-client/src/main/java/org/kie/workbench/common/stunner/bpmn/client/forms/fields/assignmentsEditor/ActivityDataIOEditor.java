@@ -108,6 +108,8 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
     }
 
     public void configureDialog(final String taskName,
+                                final String taskDocumentation,
+                                final String taskCustomName,
                                 final boolean hasInputVars,
                                 final boolean isSingleInputVar,
                                 final boolean hasOutputVars,
@@ -117,7 +119,7 @@ public class ActivityDataIOEditor implements ActivityDataIOEditorView.Presenter 
         this.hasOutputVars = hasOutputVars;
         this.isSingleOutputVar = isSingleOutputVar;
         if (taskName != null && !taskName.isEmpty()) {
-            view.setCustomViewTitle(taskName);
+            view.setCustomViewTitle(taskName, taskDocumentation, taskCustomName);
         } else {
             view.setDefaultViewTitle();
         }
