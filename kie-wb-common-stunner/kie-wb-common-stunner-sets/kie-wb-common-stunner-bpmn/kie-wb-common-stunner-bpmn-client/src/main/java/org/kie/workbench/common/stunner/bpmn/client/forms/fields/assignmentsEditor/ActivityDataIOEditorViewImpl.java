@@ -103,6 +103,9 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         SmartCLIDERow.add(SmartCLIDEColumn);
         Label label = new Label("SmartCLIDE service discovery");
         label.setPull(Pull.LEFT);
+        label.getElement().setAttribute("style", "font-size: 16px; margin-top: 20px;" +
+                " margin-bottom: 10px; font-weight: 600; line-height: 1.1; color: inherit;" +
+                " display: block; background: transparent; padding: 0px;");
         SmartCLIDEColumn.add(label);
         TextArea textArea = new TextArea();
         SmartCLIDEColumn.add(textArea);
@@ -121,21 +124,46 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             Div divInner1 = new Div();
             Span spanName = new Span();
             spanName.setText("github-notifier");
-            spanName.getElement().getStyle().setFontSize(13, Style.Unit.PX);
-            spanName.getElement().getStyle().setFontWeight(Style.FontWeight.BOLD);
+            spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
             Anchor anchor = new Anchor("(GitHub)","https://github.com/sargsyan/github-notifier.git");
             anchor.getElement().setAttribute("target","_blank");
             Span spanScore = new Span();
             spanScore.setText("score: 20.466917");
             spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
             spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            Span spanDescriptionOuter = new Span();
             Span spanDescription = new Span();
-            spanDescription.setText("Get Github and Github Enterprise notifications in your Mac OS");
-            spanDescription.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            String description = "Get Github and Github Enterprise notifications in your Mac  OS";
+            if(description.length() > 50){
+                //if there are many chars in description add button for show more/less
+                spanDescription.setText(description.substring(0,50));
+                Button buttonMoreDescription = new Button("Show More");
+                buttonMoreDescription.getElement().setAttribute("style", "background: none;" +
+                        " color: inherit; border: none; padding: 0; font: inherit;" +
+                        " cursor: pointer; outline: inherit; font-weight: bold;" +
+                        " padding-bottom: 2px; color: #0088ce; box-shadow: none; margin-left: 5px;");
+                buttonMoreDescription.addClickHandler(clickEvent1 -> {
+                    if(buttonMoreDescription.getText().equals("Show More")) {
+                        spanDescription.setText(description);
+                        buttonMoreDescription.setText("Show Less");
+                    }
+                    else{
+                        spanDescription.setText(description.substring(0,50));
+                        buttonMoreDescription.setText("Show More");
+                    }
+                });
+                spanDescriptionOuter.add(spanDescription);
+                spanDescriptionOuter.add(buttonMoreDescription);
+            }
+            else{
+                spanDescription.setText(description);
+                spanDescriptionOuter.add(spanDescription);
+            }
+            spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             divInner1.add(spanName);
             divInner1.add(anchor);
             divInner1.add(spanScore);
-            divInner1.add(spanDescription);
+            divInner1.add(spanDescriptionOuter);
             divOuter.add(divInner1);
             Div divInner2 = new Div();
             divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
