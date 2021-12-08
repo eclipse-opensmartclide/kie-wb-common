@@ -32,7 +32,6 @@ import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.ListGroup;
 import org.gwtbootstrap3.client.ui.ListGroupItem;
 import org.gwtbootstrap3.client.ui.Row;
-import org.gwtbootstrap3.client.ui.TextArea;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.Pull;
@@ -101,22 +100,29 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         SmartCLIDERow.getElement().getStyle().setDisplay(Style.Display.NONE);
         final Column SmartCLIDEColumn = new Column(ColumnSize.MD_12);
         SmartCLIDERow.add(SmartCLIDEColumn);
+
+        //Row for Service Discovery label
+        Row SmartCLIDERowInner1 = new Row();
+        Column SmartCLIDEColumnInner1 = new Column(ColumnSize.MD_12);
+        SmartCLIDERowInner1.add(SmartCLIDEColumnInner1);
         Label label = new Label("SmartCLIDE service discovery");
         label.setPull(Pull.LEFT);
         label.getElement().setAttribute("style", "font-size: 16px; margin-top: 20px;" +
                 " margin-bottom: 10px; font-weight: 600; line-height: 1.1; color: inherit;" +
                 " display: block; background: transparent; padding: 0px;");
-        SmartCLIDEColumn.add(label);
-        TextArea textArea = new TextArea();
-        SmartCLIDEColumn.add(textArea);
+        SmartCLIDEColumnInner1.add(label);
+
+        //Row for button and list
+        Row SmartCLIDERowInner2 = new Row();
+        Column SmartCLIDEColumnInner2 = new Column(ColumnSize.MD_12);
+        SmartCLIDERowInner2.add(SmartCLIDEColumnInner2);
         Button btnSearch = new Button("Search");
         btnSearch.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
         btnSearch.getElement().getStyle().setColor("#ffffff");
         btnSearch.setPull(Pull.LEFT);
         btnSearch.addClickHandler(clickEvent -> {
-            textArea.setText(this.taskDocumentation);
+            //Create List with ListItems
             ListGroup listGroup= new ListGroup();
-            listGroup.setMarginTop(35);
 
             ListGroupItem listGroupItem1= new ListGroupItem();
             Div divOuter = new Div();
@@ -168,18 +174,26 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             Div divInner2 = new Div();
             divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
             Button btnDeploy = new Button("Deploy");
-            btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
+            //btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
             Button btnUse = new Button("Use");
-            btnUse.addClickHandler(clickEvent1 -> textArea.setText("Use "+spanName.getText()));
+            //btnUse.addClickHandler(clickEvent1 -> textArea.setText("Use "+spanName.getText()));
             divInner2.add(btnDeploy);
             divInner2.add(btnUse);
             divOuter.add(divInner2);
             listGroupItem1.add(divOuter);
             listGroup.add(listGroupItem1);
 
-            SmartCLIDEColumn.add(listGroup);
+            //Row for List
+            Row SmartCLIDERowInner3 = new Row();
+            Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
+            SmartCLIDERowInner3.add(SmartCLIDEColumnInner3);
+            SmartCLIDEColumnInner3.add(listGroup);
+            SmartCLIDEColumn.add(SmartCLIDEColumnInner3);
         });
-        SmartCLIDEColumn.add(btnSearch);
+        SmartCLIDEColumnInner2.add(btnSearch);
+
+        SmartCLIDEColumn.add(SmartCLIDERowInner1);
+        SmartCLIDEColumn.add(SmartCLIDERowInner2);
         container.add(SmartCLIDERow);
         /**SmartCLIDE addition**/
 
