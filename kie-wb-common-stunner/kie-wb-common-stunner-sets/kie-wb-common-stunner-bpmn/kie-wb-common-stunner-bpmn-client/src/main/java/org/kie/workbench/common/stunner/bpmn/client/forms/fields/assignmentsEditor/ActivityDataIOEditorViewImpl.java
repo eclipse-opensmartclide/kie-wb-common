@@ -176,7 +176,15 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             Button btnDeploy = new Button("Deploy");
             //btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
             Button btnUse = new Button("Use");
-            //btnUse.addClickHandler(clickEvent1 -> textArea.setText("Use "+spanName.getText()));
+            btnUse.addClickHandler(clickEvent1 -> {
+                //add assignment to variable
+                for(int i=0; i<inputAssignmentsWidget.view.getAssignmentsCount(); i++){
+                    if(inputAssignmentsWidget.view.getAssignmentRows().get(i).getName().equals("Method")){
+                        inputAssignmentsWidget.view.getAssignmentWidget(i).setExpression("GET");
+                        inputAssignmentsWidget.view.getAssignmentWidget(i).setProcessVarComboBoxText("GET");
+                    }
+                }
+            });
             divInner2.add(btnDeploy);
             divInner2.add(btnUse);
             divOuter.add(divInner2);

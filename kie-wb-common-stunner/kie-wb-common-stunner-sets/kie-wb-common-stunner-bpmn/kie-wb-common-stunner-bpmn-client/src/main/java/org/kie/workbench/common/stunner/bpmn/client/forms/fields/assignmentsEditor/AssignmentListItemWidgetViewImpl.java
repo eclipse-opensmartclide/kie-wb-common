@@ -232,6 +232,11 @@ public class AssignmentListItemWidgetViewImpl extends Composite implements Assig
     }
 
     @Override
+    public  void setProcessVarComboBoxText(String s){
+        this.processVarComboBox.setListBoxValue(s);
+    }
+
+    @Override
     public AssignmentRow getModel() {
         return assignment.getModel();
     }

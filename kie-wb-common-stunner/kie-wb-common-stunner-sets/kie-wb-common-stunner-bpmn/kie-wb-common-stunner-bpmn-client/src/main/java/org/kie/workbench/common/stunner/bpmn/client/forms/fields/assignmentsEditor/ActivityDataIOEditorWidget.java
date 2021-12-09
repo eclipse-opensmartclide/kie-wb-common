@@ -44,7 +44,7 @@ import static org.kie.workbench.common.stunner.core.client.util.ClientUtils.getS
 public class ActivityDataIOEditorWidget implements ActivityDataIOEditorWidgetView.Presenter {
 
     @Inject
-    private ActivityDataIOEditorWidgetView view;
+    public ActivityDataIOEditorWidgetView view;
     @Inject
     private SessionManager sessionManager;
 

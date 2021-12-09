@@ -70,4 +70,6 @@ public interface AssignmentListItemWidgetView extends HasModel<AssignmentRow> {
     void setExpression(final String expression);
 
     void setReadOnly(final boolean readOnly);
+
+    void setProcessVarComboBoxText(final String s);
 }
