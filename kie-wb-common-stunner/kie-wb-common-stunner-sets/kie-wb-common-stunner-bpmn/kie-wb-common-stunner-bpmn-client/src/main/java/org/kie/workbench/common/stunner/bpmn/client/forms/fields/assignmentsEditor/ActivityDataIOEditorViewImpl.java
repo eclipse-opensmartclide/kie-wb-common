@@ -67,7 +67,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public static final int EXPRESSION_MAX_DISPLAY_LENGTH = 65;
 
-    public Row SmartCLIDERow;
+    public Row SmartCLIDERowSearch;
 
     public String taskDocumentation;
 
@@ -94,12 +94,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
 
         /**SmartCLIDE addition**/
-        //add new ui
-        SmartCLIDERow = new Row();
-        SmartCLIDERow.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
-        SmartCLIDERow.getElement().getStyle().setDisplay(Style.Display.NONE);
-        final Column SmartCLIDEColumn = new Column(ColumnSize.MD_12);
-        SmartCLIDERow.add(SmartCLIDEColumn);
+        /**Service Discovery**/
+        SmartCLIDERowSearch = new Row();
+        SmartCLIDERowSearch.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        SmartCLIDERowSearch.getElement().getStyle().setDisplay(Style.Display.NONE);
+        final Column SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
+        SmartCLIDERowSearch.add(SmartCLIDEColumnSearch);
 
         //Row for Service Discovery label
         Row SmartCLIDERowInner1 = new Row();
@@ -123,6 +123,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnSearch.addClickHandler(clickEvent -> {
             //Create List with ListItems
             ListGroup listGroup= new ListGroup();
+            listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
 
             ListGroupItem listGroupItem1= new ListGroupItem();
             Div divOuter = new Div();
@@ -196,13 +197,54 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
             SmartCLIDERowInner3.add(SmartCLIDEColumnInner3);
             SmartCLIDEColumnInner3.add(listGroup);
-            SmartCLIDEColumn.add(SmartCLIDEColumnInner3);
+            SmartCLIDEColumnSearch.add(SmartCLIDERowInner3);
         });
         SmartCLIDEColumnInner2.add(btnSearch);
 
-        SmartCLIDEColumn.add(SmartCLIDERowInner1);
-        SmartCLIDEColumn.add(SmartCLIDERowInner2);
-        container.add(SmartCLIDERow);
+        SmartCLIDEColumnSearch.add(SmartCLIDERowInner1);
+        SmartCLIDEColumnSearch.add(SmartCLIDERowInner2);
+        container.add(SmartCLIDERowSearch);
+        /**Service Discovery**/
+
+        /**Service Creation**/
+        Row SmartCLIDERowCreation = new Row();
+        SmartCLIDERowCreation.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        Column SmartCLIDEColumnCreation = new Column(ColumnSize.MD_12);
+        SmartCLIDERowCreation.add(SmartCLIDEColumnCreation);
+        //Label
+        Row SmartCLIDERowInnerCreation1 = new Row();
+        Column SmartCLIDEColumnInnerCreation1 = new Column(ColumnSize.MD_12);
+        SmartCLIDERowInnerCreation1.add(SmartCLIDEColumnInnerCreation1);
+        Label labelC = new Label("SmartCLIDE service creation");
+        labelC.setPull(Pull.LEFT);
+        labelC.getElement().setAttribute("style", "font-size: 16px; margin-top: 20px;" +
+                " margin-bottom: 10px; font-weight: 600; line-height: 1.1; color: inherit;" +
+                " display: block; background: transparent; padding: 0px;");
+        SmartCLIDEColumnInnerCreation1.add(labelC);
+        //Button Create
+        Row SmartCLIDERowInnerCreation2 = new Row();
+        Column SmartCLIDEColumnInnerCreation2 = new Column(ColumnSize.MD_12);
+        SmartCLIDERowInnerCreation2.add(SmartCLIDEColumnInnerCreation2);
+        Div divServiceCreation = new Div();
+        divServiceCreation.getElement().setAttribute("style","display: flex; justify-content: flex-start;");
+        Button btnCreate = new Button("Create");
+        btnCreate.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
+        btnCreate.getElement().getStyle().setColor("#ffffff");
+        btnCreate.addClickHandler(clickEvent1 -> {
+            //ToDo
+            //start Theia
+        });
+        divServiceCreation.add(btnCreate);
+        Span spanCreteServiceText = new Span();
+        spanCreteServiceText.setText("If you can't find a suitable service you can create your own!");
+        spanCreteServiceText.getElement().setAttribute("style","font-weight: 400; font-style: italic; margin-left: 5px; margin-top: 2px;");
+        divServiceCreation.add(spanCreteServiceText);
+        SmartCLIDEColumnInnerCreation2.add(divServiceCreation);
+
+        SmartCLIDEColumnCreation.add(SmartCLIDERowInnerCreation1);
+        SmartCLIDEColumnCreation.add(SmartCLIDERowInnerCreation2);
+        container.add(SmartCLIDERowCreation);
+        /**Service Creation**/
         /**SmartCLIDE addition**/
 
 
@@ -236,7 +278,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         /**SmartCLIDE addition**/
         //show only for Rest tasks and get description
         if(taskCustomName.equals("Rest")) {
-            SmartCLIDERow.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            SmartCLIDERowSearch.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             this.taskDocumentation = documentation;
         }
         /**SmartCLIDE addition**/
