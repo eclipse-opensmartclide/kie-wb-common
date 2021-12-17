@@ -23,7 +23,16 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.Window;
 import org.gwtbootstrap3.client.ui.Anchor;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Column;
@@ -70,6 +79,9 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     public Row SmartCLIDERowSearch;
 
     public String taskDocumentation;
+
+    private String urlTheia = "";
+    private String urlServiceDiscovery = "";
 
     public ActivityDataIOEditorViewImpl() {
         super();
@@ -125,72 +137,100 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             ListGroup listGroup= new ListGroup();
             listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
 
-            ListGroupItem listGroupItem1= new ListGroupItem();
-            Div divOuter = new Div();
-            divOuter.getElement().setAttribute("style","display: flex; justify-content: space-between;");
-            Div divInner1 = new Div();
-            Span spanName = new Span();
-            spanName.setText("github-notifier");
-            spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
-            Anchor anchor = new Anchor("(GitHub)","https://github.com/sargsyan/github-notifier.git");
-            anchor.getElement().setAttribute("target","_blank");
-            Span spanScore = new Span();
-            spanScore.setText("score: 20.466917");
-            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
-            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-            Span spanDescriptionOuter = new Span();
-            Span spanDescription = new Span();
-            String description = "Get Github and Github Enterprise notifications in your Mac  OS";
-            if(description.length() > 50){
-                //if there are many chars in description add button for show more/less
-                spanDescription.setText(description.substring(0,50));
-                Button buttonMoreDescription = new Button("Show More");
-                buttonMoreDescription.getElement().setAttribute("style", "background: none;" +
-                        " color: inherit; border: none; padding: 0; font: inherit;" +
-                        " cursor: pointer; outline: inherit; font-weight: bold;" +
-                        " padding-bottom: 2px; color: #0088ce; box-shadow: none; margin-left: 5px;");
-                buttonMoreDescription.addClickHandler(clickEvent1 -> {
-                    if(buttonMoreDescription.getText().equals("Show More")) {
-                        spanDescription.setText(description);
-                        buttonMoreDescription.setText("Show Less");
-                    }
-                    else{
-                        spanDescription.setText(description.substring(0,50));
-                        buttonMoreDescription.setText("Show More");
-                    }
-                });
-                spanDescriptionOuter.add(spanDescription);
-                spanDescriptionOuter.add(buttonMoreDescription);
+            //Call Service Discovery API
+            try {
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, urlServiceDiscovery);
+                builder.setHeader("Content-Type", "application/json");
+                String jsonInputString3 = "\"{\\\"full_name\\\":{\\\"0\\\":\\\"" + this.getTitle() +
+                            "\\\"}, \\\"description\\\": {\\\"0\\\":\\\"" + this.taskDocumentation + "\\\"}}\"";
+                Request response = builder.sendRequest(jsonInputString3, new RequestCallback() {
+                    public void onError(Request request, Throwable exception) { }
+                    public void onResponseReceived(Request request, Response response) {
+                        String sss= response.getText().substring(1, response.getText().length()-2);
+                        sss = sss.replace("\\\"{", "{");
+                        sss = sss.replace("}\\\"", "}");
+                        sss = sss.replace("\\\\\\\"", "\"");
+                        JSONArray jsonArray = (JSONArray) JSONParser.parse(sss);
+
+                        //For each service create a List Item
+                        for(int i=0; i<jsonArray.size(); i++) {
+                            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                            Double score= Double.parseDouble(jsonObject.get("_score").toString());
+                            JSONObject jsonObject2= (JSONObject) jsonObject.get("_source");
+                            String fullName = jsonObject2.get("full_name").toString();
+                            String description = jsonObject2.get("description").toString();
+                            String link = jsonObject2.get("link").toString();
+
+                            ListGroupItem listGroupItem1= new ListGroupItem();
+                            Div divOuter = new Div();
+                            divOuter.getElement().setAttribute("style","display: flex; justify-content: space-between;");
+                            Div divInner1 = new Div();
+                            Span spanName = new Span();
+                            spanName.setText(fullName);
+                            spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
+                            Anchor anchor = new Anchor("(GitHub)",link);
+                            anchor.getElement().setAttribute("target","_blank");
+                            Span spanScore = new Span();
+                            spanScore.setText("score: " + score);
+                            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
+                            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                            Span spanDescriptionOuter = new Span();
+                            Span spanDescription = new Span();
+                            if(description.length() > 50){
+                                //if there are many chars in description add button for show more/less
+                                spanDescription.setText(description.substring(0,50));
+                                Button buttonMoreDescription = new Button("Show More");
+                                buttonMoreDescription.getElement().setAttribute("style", "background: none;" +
+                                        " color: inherit; border: none; padding: 0; font: inherit;" +
+                                        " cursor: pointer; outline: inherit; font-weight: bold;" +
+                                        " padding-bottom: 2px; color: #0088ce; box-shadow: none; margin-left: 5px;");
+                                buttonMoreDescription.addClickHandler(clickEvent1 -> {
+                                    if(buttonMoreDescription.getText().equals("Show More")) {
+                                        spanDescription.setText(description);
+                                        buttonMoreDescription.setText("Show Less");
+                                    }
+                                    else{
+                                        spanDescription.setText(description.substring(0,50));
+                                        buttonMoreDescription.setText("Show More");
+                                    }
+                                });
+                                spanDescriptionOuter.add(spanDescription);
+                                spanDescriptionOuter.add(buttonMoreDescription);
+                            }
+                            else{
+                                spanDescription.setText(description);
+                                spanDescriptionOuter.add(spanDescription);
+                            }
+                            spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                            divInner1.add(spanName);
+                            divInner1.add(anchor);
+                            divInner1.add(spanScore);
+                            divInner1.add(spanDescriptionOuter);
+                            divOuter.add(divInner1);
+                            Div divInner2 = new Div();
+                            divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
+                            Button btnDeploy = new Button("Deploy");
+                            //btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
+                            Button btnUse = new Button("Use");
+                            btnUse.addClickHandler(clickEvent1 -> {
+                                //add assignment to variable
+                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
+                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
+                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
+                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
+                                    }
+                                }
+                            });
+                            divInner2.add(btnDeploy);
+                            divInner2.add(btnUse);
+                            divOuter.add(divInner2);
+                            listGroupItem1.add(divOuter);
+                            listGroup.add(listGroupItem1);
+                        }}
+                 });
+            } catch (RequestException e) {
+                e.printStackTrace();
             }
-            else{
-                spanDescription.setText(description);
-                spanDescriptionOuter.add(spanDescription);
-            }
-            spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-            divInner1.add(spanName);
-            divInner1.add(anchor);
-            divInner1.add(spanScore);
-            divInner1.add(spanDescriptionOuter);
-            divOuter.add(divInner1);
-            Div divInner2 = new Div();
-            divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
-            Button btnDeploy = new Button("Deploy");
-            //btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
-            Button btnUse = new Button("Use");
-            btnUse.addClickHandler(clickEvent1 -> {
-                //add assignment to variable
-                for(int i=0; i<inputAssignmentsWidget.view.getAssignmentsCount(); i++){
-                    if(inputAssignmentsWidget.view.getAssignmentRows().get(i).getName().equals("Method")){
-                        inputAssignmentsWidget.view.getAssignmentWidget(i).setExpression("GET");
-                        inputAssignmentsWidget.view.getAssignmentWidget(i).setProcessVarComboBoxText("GET");
-                    }
-                }
-            });
-            divInner2.add(btnDeploy);
-            divInner2.add(btnUse);
-            divOuter.add(divInner2);
-            listGroupItem1.add(divOuter);
-            listGroup.add(listGroupItem1);
 
             //Row for List
             Row SmartCLIDERowInner3 = new Row();
@@ -233,6 +273,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnCreate.addClickHandler(clickEvent1 -> {
             //ToDo
             //start Theia
+            Window.open(urlTheia,"_blank","");
         });
         divServiceCreation.add(btnCreate);
         Span spanCreteServiceText = new Span();
