@@ -80,6 +80,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public String taskDocumentation;
 
+    public String taskTitle;
+
     private String urlTheia = "";
     private String urlServiceDiscovery = "";
 
@@ -141,7 +143,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             try {
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, urlServiceDiscovery);
                 builder.setHeader("Content-Type", "application/json");
-                String jsonInputString3 = "\"{\\\"full_name\\\":{\\\"0\\\":\\\"" + this.getTitle() +
+                String jsonInputString3 = "\"{\\\"full_name\\\":{\\\"0\\\":\\\"" + this.taskTitle +
                             "\\\"}, \\\"description\\\": {\\\"0\\\":\\\"" + this.taskDocumentation + "\\\"}}\"";
                 Request response = builder.sendRequest(jsonInputString3, new RequestCallback() {
                     public void onError(Request request, Throwable exception) { }
@@ -157,9 +159,10 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                             Double score= Double.parseDouble(jsonObject.get("_score").toString());
                             JSONObject jsonObject2= (JSONObject) jsonObject.get("_source");
-                            String fullName = jsonObject2.get("full_name").toString();
-                            String description = jsonObject2.get("description").toString();
-                            String link = jsonObject2.get("link").toString();
+                            String fullName = jsonObject2.get("full_name").toString().substring(1, jsonObject2.get("full_name").toString().length()-1);
+                            String description = jsonObject2.get("description").toString().substring(1, jsonObject2.get("description").toString().length()-1);
+                            String link = jsonObject2.get("link").toString().substring(1, jsonObject2.get("link").toString().length()-1);
+                            String source = jsonObject2.get("source").toString().substring(1, jsonObject2.get("source").toString().length()-1);
 
                             ListGroupItem listGroupItem1= new ListGroupItem();
                             Div divOuter = new Div();
@@ -168,7 +171,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             Span spanName = new Span();
                             spanName.setText(fullName);
                             spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
-                            Anchor anchor = new Anchor("(GitHub)",link);
+                            Anchor anchor = new Anchor("("+ source +")",link);
                             anchor.getElement().setAttribute("target","_blank");
                             Span spanScore = new Span();
                             spanScore.setText("score: " + score);
@@ -317,6 +320,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         setTitle(name + " " + StunnerFormsClientFieldsConstants.CONSTANTS.Data_IO());
 
         /**SmartCLIDE addition**/
+        this.taskTitle = name;
         //show only for Rest tasks and get description
         if(taskCustomName.equals("Rest")) {
             SmartCLIDERowSearch.getElement().getStyle().setDisplay(Style.Display.BLOCK);
