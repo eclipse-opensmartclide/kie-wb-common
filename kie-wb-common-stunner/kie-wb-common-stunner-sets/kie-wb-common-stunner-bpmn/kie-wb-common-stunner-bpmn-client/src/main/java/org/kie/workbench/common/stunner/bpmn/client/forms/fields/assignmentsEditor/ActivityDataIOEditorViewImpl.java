@@ -82,8 +82,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public String taskTitle;
 
-    private String urlTheia = "";
-    private String urlServiceDiscovery = "";
+    private String urlTheia = "SMARTCLIDE_THEIA_URL";
+    private String urlServiceDiscovery = "SMARTCLIDE_SERVICE_DISCOVERY_URL";
 
     public ActivityDataIOEditorViewImpl() {
         super();
