@@ -31,6 +31,7 @@ ENV KIE_CONTEXT_PATH business-central
 ENV KIE_SERVER_ID sample-server
 ENV KIE_SERVER_LOCATION http://localhost:8080/kie-server/services/rest/server
 ENV EXTRA_OPTS -Dorg.jbpm.ht.admin.group=admin -Dorg.uberfire.nio.git.ssh.host=$JBOSS_BIND_ADDRESS
+ENV KEYCLOAK_VERSION 14.0.0
 
 ## JBPM-WB ##
 RUN curl -o $HOME/jbpm-server-dist.zip $KIE_REPOSITORY/$KIE_VERSION/jbpm-server-$KIE_VERSION-dist.zip && \
@@ -42,16 +43,44 @@ RUN rm $JBOSS_HOME/standalone/deployments/business-central.war
 COPY --from=build /kie-wb-distributions/business-central-parent/business-central-webapp/target/business-central-webapp.war $JBOSS_HOME/standalone/deployments/business-central.war
 
 ## CONFIGURATION ##
+# install keycloak-wildfly-adapter
+RUN curl -L -o ${JBOSS_HOME}/keycloak-oidc-wildfly-adapter.zip https://github.com/keycloak/keycloak/releases/download/${KEYCLOAK_VERSION}/keycloak-oidc-wildfly-adapter-${KEYCLOAK_VERSION}.zip && \
+    unzip -o -q ${JBOSS_HOME}/keycloak-oidc-wildfly-adapter.zip -d ${JBOSS_HOME} && \
+    rm -rf ${JBOSS_HOME}/keycloak-oidc-wildfly-adapter.zip
+RUN ${JBOSS_HOME}/bin/jboss-cli.sh --file=${JBOSS_HOME}/bin/adapter-elytron-install-offline.cli
+
+# remove superfluous war
+RUN rm $JBOSS_HOME/standalone/deployments/jbpm-casemgmt.war
+
+# patch business-central war 
+ADD web.xml $JBOSS_HOME/standalone/deployments/WEB-INF/web.xml
 USER root
+RUN chown -R jboss:jboss $JBOSS_HOME/standalone/deployments/WEB-INF
+USER jboss
+RUN jar ufv $JBOSS_HOME/standalone/deployments/business-central.war -C $JBOSS_HOME/standalone/deployments WEB-INF && \
+    rm -rf $JBOSS_HOME/standalone/deployments/WEB-INF
+
+# remove superfluous files
+#RUN rm $JBOSS_HOME/standalone/configuration/users.properties && \
+#    rm $JBOSS_HOME/standalone/configuration/roles.properties
+
+# Add scrips and configuration
 ADD start_jbpm-wb.sh $JBOSS_HOME/bin/start_jbpm-wb.sh
+ADD jbpm-postgres-config.cli $JBOSS_HOME/bin/jbpm-postgres-config.cli
+ADD update_config.sh $JBOSS_HOME/bin/update_config.sh
 ADD update_db_config.sh $JBOSS_HOME/bin/update_db_config.sh
+ADD standalone.xml $JBOSS_HOME/standalone/configuration/standalone.xml
+
+USER root
 RUN chown jboss:jboss $JBOSS_HOME/standalone/deployments/*
 RUN chown jboss:jboss $JBOSS_HOME/bin/start_jbpm-wb.sh
+RUN chown jboss:jboss $JBOSS_HOME/bin/update_config.sh
 RUN chown jboss:jboss $JBOSS_HOME/bin/update_db_config.sh
+RUN chown jboss:jboss $JBOSS_HOME/bin/jbpm-postgres-config.cli
 RUN chmod a+x $JBOSS_HOME/bin/start_jbpm-wb.sh
+RUN chmod a+x $JBOSS_HOME/bin/update_config.sh
 RUN chmod a+x $JBOSS_HOME/bin/update_db_config.sh
-#RUN sed -i '/<property name="org.kie.server.location" value="http:\/\/localhost:8080\/kie-server\/services\/rest\/server"\/>/d' $JBOSS_HOME/standalone/configuration/standalone.xml
-#RUN sed -i '/<property name="org.kie.server.id" value="sample-server"\/>/d' $JBOSS_HOME/standalone/configuration/standalone.xml
+RUN chmod a+x $JBOSS_HOME/bin/jbpm-postgres-config.cli
 
 ## CUSTOM JBOSS USER ##
 # Switchback to jboss user
