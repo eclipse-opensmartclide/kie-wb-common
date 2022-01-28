@@ -5,7 +5,6 @@ FROM maven:3.8.4-jdk-11 AS build
 ENV SMARTCLIDE_THEIA_URL 127.0.0.1:3030
 ENV SMARTCLIDE_SERVICE_DISCOVERY_URL 127.0.0.1:2020
 
-
 ## Kie Common Stunner Build ##
 COPY /kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-client common
 RUN sed -i "s;SMARTCLIDE_THEIA_URL;$SMARTCLIDE_THEIA_URL;g" "/common/src/main/java/org/kie/workbench/common/stunner/bpmn/client/forms/fields/assignmentsEditor/ActivityDataIOEditorViewImpl.java"
