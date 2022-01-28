@@ -2,9 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ SmartCLIDE-addons ]
+    branches:
+      - SmartCLIDE-addons
   pull_request:
-    branches: [ SmartCLIDE-addons ]
+    branches:
+      - SmartCLIDE-addons
 
 jobs:
   publish:
@@ -15,7 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          ref: 'SmartCLIDE-addons'
+          ref: SmartCLIDE-addons
       - name: Publish Docker Image
         run: |
             # login to GitHub Container Registry
