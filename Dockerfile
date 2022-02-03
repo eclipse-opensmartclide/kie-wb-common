@@ -2,6 +2,14 @@
 FROM maven:3.8.4-jdk-11 AS build
 
 ## Kie Common Stunner Build ##
+COPY /kie-wb-common-dmn/kie-wb-common-dmn-api common-api
+RUN mvn -f common-api/pom.xml install -DskipTests
+
+## Kie Common Stunner Build ##
+COPY /kie-wb-common-dmn/kie-wb-common-dmn-backend common-backend
+RUN mvn -f common-backend/pom.xml install -DskipTests
+
+## Kie Common Stunner Build ##
 COPY /kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-client common
 RUN mvn -f common/pom.xml install -DskipTests
 
