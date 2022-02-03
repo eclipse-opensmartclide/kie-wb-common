@@ -330,6 +330,11 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.kie.workbench</groupId>
+      <artifactId>kie-wb-common-dmn-api</artifactId>
+    </dependency>
+
   </dependencies>
 
   <!-- BPMN requires additional Monaco editor language libraries. -->

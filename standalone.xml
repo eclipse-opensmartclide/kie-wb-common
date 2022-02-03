@@ -61,6 +61,8 @@
         <property name="org.kie.server.controller.pwd" value="KIE_SERVER_CONTROLLER_PASSWORD"/>
         <property name="org.uberfire.ext.security.management.api.userManagementServices" value="KCAdapterUserManagementService"/>
         <property name="org.uberfire.ext.security.management.keycloak.authServer" value="SMARTCLIDE_KEYCLOAK_AUTH_SERVER"/>
+        <property name="smartclide.theia.url" value="SMARTCLIDE_THEIA_URL"/>
+        <property name="smartclide.service.discovery.url" value="SMARTCLIDE_SERVICE_DISCOVERY_URL"/>
     </system-properties>
     <management>
         <security-realms>

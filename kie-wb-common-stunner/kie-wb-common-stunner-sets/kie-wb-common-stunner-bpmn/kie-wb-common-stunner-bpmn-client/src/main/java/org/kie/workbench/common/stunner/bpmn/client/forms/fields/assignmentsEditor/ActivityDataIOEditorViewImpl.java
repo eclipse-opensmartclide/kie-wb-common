@@ -46,6 +46,9 @@ import org.gwtbootstrap3.client.ui.constants.ColumnSize;
 import org.gwtbootstrap3.client.ui.constants.Pull;
 import org.gwtbootstrap3.client.ui.html.Div;
 import org.gwtbootstrap3.client.ui.html.Span;
+import org.jboss.errai.common.client.api.Caller;
+import org.jboss.errai.common.client.api.RemoteCallback;
+import org.kie.workbench.common.dmn.api.SmartClideSystem;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.i18n.StunnerFormsClientFieldsConstants;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.AssignmentRow;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
@@ -82,8 +85,11 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public String taskTitle;
 
-    private String urlTheia = "SMARTCLIDE_THEIA_URL";
-    private String urlServiceDiscovery = "SMARTCLIDE_SERVICE_DISCOVERY_URL";
+    private String urlTheia = "";
+    private String urlServiceDiscovery = "";
+
+    @Inject
+    private Caller<SmartClideSystem> smartClideSystem;
 
     public ActivityDataIOEditorViewImpl() {
         super();
@@ -108,6 +114,20 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
 
         /**SmartCLIDE addition**/
+        /**Get System Properties**/
+        smartClideSystem.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(String s) {
+                urlTheia=s;
+            }
+        }).getTheiaURL();
+        smartClideSystem.call(new RemoteCallback<String>() {
+            @Override
+            public void callback(String s) {
+                urlServiceDiscovery=s;
+            }
+        }).getServiceDiscoveryURL();
+
         /**Service Discovery**/
         SmartCLIDERowSearch = new Row();
         SmartCLIDERowSearch.getElement().getStyle().setMarginTop(10, Style.Unit.PX);

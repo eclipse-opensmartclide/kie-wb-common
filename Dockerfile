@@ -1,14 +1,8 @@
 ####### BUILD ############
 FROM maven:3.8.4-jdk-11 AS build
 
-## ENVIRONMENT ##
-ENV SMARTCLIDE_THEIA_URL 127.0.0.1:3030
-ENV SMARTCLIDE_SERVICE_DISCOVERY_URL 127.0.0.1:2020
-
 ## Kie Common Stunner Build ##
 COPY /kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-client common
-RUN sed -i "s;SMARTCLIDE_THEIA_URL;$SMARTCLIDE_THEIA_URL;g" "/common/src/main/java/org/kie/workbench/common/stunner/bpmn/client/forms/fields/assignmentsEditor/ActivityDataIOEditorViewImpl.java"
-RUN sed -i "s;SMARTCLIDE_SERVICE_DISCOVERY_URL;$SMARTCLIDE_SERVICE_DISCOVERY_URL;g" "/common/src/main/java/org/kie/workbench/common/stunner/bpmn/client/forms/fields/assignmentsEditor/ActivityDataIOEditorViewImpl.java"
 RUN mvn -f common/pom.xml install -DskipTests
 
 ## Kie Distributions Build ##
@@ -32,6 +26,8 @@ ENV KIE_SERVER_ID sample-server
 ENV KIE_SERVER_LOCATION http://localhost:8080/kie-server/services/rest/server
 ENV EXTRA_OPTS -Dorg.jbpm.ht.admin.group=admin -Dorg.uberfire.nio.git.ssh.host=$JBOSS_BIND_ADDRESS
 ENV KEYCLOAK_VERSION 14.0.0
+ENV SMARTCLIDE_THEIA_URL 127.0.0.1:3030
+ENV SMARTCLIDE_SERVICE_DISCOVERY_URL 127.0.0.1:2020
 
 ## JBPM-WB ##
 RUN curl -o $HOME/jbpm-server-dist.zip $KIE_REPOSITORY/$KIE_VERSION/jbpm-server-$KIE_VERSION-dist.zip && \
