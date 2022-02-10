@@ -172,6 +172,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                         sss = sss.replace("\\\"{", "{");
                         sss = sss.replace("}\\\"", "}");
                         sss = sss.replace("\\\\\\\"", "\"");
+                        sss = sss.replace("\\\\\\\\\"", "\\\"");
                         JSONArray jsonArray = (JSONArray) JSONParser.parse(sss);
 
                         //For each service create a List Item
