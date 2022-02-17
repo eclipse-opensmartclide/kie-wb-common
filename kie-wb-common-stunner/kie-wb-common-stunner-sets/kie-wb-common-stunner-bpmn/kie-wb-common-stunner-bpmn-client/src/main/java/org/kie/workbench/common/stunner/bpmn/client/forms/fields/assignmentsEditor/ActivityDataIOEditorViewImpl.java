@@ -81,6 +81,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public Row SmartCLIDERowSearch;
 
+    public Row SmartCLIDERowCreation;
+
     public String taskDocumentation;
 
     public String taskTitle;
@@ -271,8 +273,9 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         /**Service Discovery**/
 
         /**Service Creation**/
-        Row SmartCLIDERowCreation = new Row();
+        SmartCLIDERowCreation = new Row();
         SmartCLIDERowCreation.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
+        SmartCLIDERowCreation.getElement().getStyle().setDisplay(Style.Display.NONE);
         Column SmartCLIDEColumnCreation = new Column(ColumnSize.MD_12);
         SmartCLIDERowCreation.add(SmartCLIDEColumnCreation);
         //Label
@@ -345,6 +348,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         //show only for Rest tasks and get description
         if(taskCustomName.equals("Rest")) {
             SmartCLIDERowSearch.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+            SmartCLIDERowCreation.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             this.taskDocumentation = documentation;
         }
         /**SmartCLIDE addition**/
