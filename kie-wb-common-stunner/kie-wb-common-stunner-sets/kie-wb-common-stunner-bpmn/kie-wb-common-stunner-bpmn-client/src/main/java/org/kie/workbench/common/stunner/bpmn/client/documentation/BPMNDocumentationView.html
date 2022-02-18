@@ -15,6 +15,43 @@
   -->
 <div id="documentationPanel" data-field="documentationPanel" class="documentationPanel">
     <div class="documentationContent">
+        <div id="tdContent" style="display: none;">
+            <p>
+                <h1 class="page-header" id="process-td">TD of workflow</h1>
+            </p>
+            <p>
+                <table class="table table-inverse">
+                    <tbody class="textContent">
+                        <tr>
+                            <td><b>Number of Tasks</b></td>
+                            <td><span id="numberOfTasks"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Number of Rest Tasks in a row</b></td>
+                            <td><span id="number-of-tasks-in-row"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>No User Tasks</b></td>
+                            <td><span id="noUserTask"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Different data types</b></td>
+                            <td><span id="differentDataTypes"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Lack of description</b></td>
+                            <td><span id="lackDescription"></span></td>
+                        </tr>
+                        <tr>
+                            <td><b>Number of Custom Tasks</b></td>
+                            <td><span id="numberOfCustomTasks"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </p>
+        </div>
+
+        <input type="button" id="tdButton" data-field="tdButton" class="tdButton"/>
         <input type="button" id="printButton" data-field="printButton" class="printButton"/>
     </div>
     <div id="documentationDiv" data-field="documentationDiv" class="documentationContent"/>

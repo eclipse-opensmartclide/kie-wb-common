@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -24,9 +25,11 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.google.gwt.dom.client.Document;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
@@ -34,7 +37,10 @@ import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumentationView;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
+import org.kie.workbench.common.stunner.core.graph.Node;
+import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
+import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
 import org.uberfire.client.views.pfly.icon.PatternFlyIconType;
 import org.uberfire.client.views.pfly.widgets.Button;
@@ -54,6 +60,38 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
     @Inject
     @DataField
     private Button printButton;
+
+    @Inject
+    @DataField
+    private Button tdButton;
+
+    @Inject
+    @Named("numberOfTasks")
+    @DataField
+    private HTMLElement numberOfTasks;
+
+    @Inject
+    @Named("noUserTask")
+    @DataField
+    private HTMLElement noUserTask;
+
+    @Inject
+    @Named("differentDataTypes")
+    @DataField
+    private HTMLElement differentDataTypes;
+
+    @Inject
+    @Named("lackDescription")
+    @DataField
+    private HTMLElement lackDescription;
+
+    @Inject
+    @Named("numberOfCustomTasks")
+    @DataField
+    private HTMLElement numberOfCustomTasks;
+
+    @Inject
+    private DefinitionUtils definitionUtils;
 
     private final ClientTranslationService clientTranslationService;
 
@@ -95,6 +133,35 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
         printButton.setText(clientTranslationService.getValue(CoreTranslationMessages.PRINT));
         printButton.addIcon(PatternFlyIconType.PRINT.getCssName(), "pull-right");
         printButton.setClickHandler(() -> print());
+
+        /** TD of workflow **/
+        tdButton.setText("Calculate TD");
+        tdButton.setClickHandler(() -> {
+            Document.get().getElementById("tdContent").setAttribute("style","display: block;");
+
+            String names = "";
+            //String categ= "";
+            Iterator<Node> iterator = diagram.getGraph().nodes().iterator();
+            while ((iterator.hasNext())) {
+                Node n = iterator.next();
+                if (n.getContent() instanceof Definition && n.getContent()!=null){
+                    Definition d = (Definition) n.getContent();
+                    if (!(d.getDefinition() instanceof BPMNDiagram) && d.getDefinition()!=null){
+                        names+=definitionUtils.getName(d.getDefinition()) +" ";
+                        //categ+= definitionHelper.getDefinitionCategory(d.getDefinition())+ " ";
+                    }
+                }
+            }
+            numberOfTasks.innerHTML = ""+names;
+            //noUserTask.innerHTML= ""+categ;
+        });
+
+        numberOfTasks.innerHTML = "10";
+        noUserTask.innerHTML = "Yes";
+        differentDataTypes.innerHTML = "10";
+        lackDescription.innerHTML = "2";
+        numberOfCustomTasks.innerHTML = "5";
+        /** TD of workflow **/
 
         return refresh();
     }
