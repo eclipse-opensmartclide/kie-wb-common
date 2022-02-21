@@ -16,7 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.documentation;
 
-import java.util.Iterator;
+import java.util.HashMap;
+//import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -29,16 +30,20 @@ import com.google.gwt.dom.client.Document;
 import elemental2.dom.HTMLElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
-import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+//import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
 import org.kie.workbench.common.stunner.bpmn.documentation.BPMNDocumentationService;
+import org.kie.workbench.common.stunner.bpmn.documentation.model.element.Element;
+import org.kie.workbench.common.stunner.bpmn.documentation.model.element.ElementTotal;
+import org.kie.workbench.common.stunner.bpmn.documentation.model.general.ProcessVariablesTotal;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.util.PrintHelper;
+import org.kie.workbench.common.stunner.core.client.util.js.KeyValue;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.documentation.DefaultDiagramDocumentationView;
 import org.kie.workbench.common.stunner.core.documentation.model.DocumentationOutput;
-import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
+//import org.kie.workbench.common.stunner.core.graph.Node;
+//import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 import org.kie.workbench.common.stunner.forms.client.event.FormFieldChanged;
@@ -93,6 +98,9 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
     @Inject
     private DefinitionUtils definitionUtils;
 
+    @Inject
+    private ClientBPMNDocumentationService clientBPMNDocumentationService;
+
     private final ClientTranslationService clientTranslationService;
 
     private final PrintHelper printHelper;
@@ -139,28 +147,71 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
         tdButton.setClickHandler(() -> {
             Document.get().getElementById("tdContent").setAttribute("style","display: block;");
 
-            String names = "";
-            //String categ= "";
-            Iterator<Node> iterator = diagram.getGraph().nodes().iterator();
-            while ((iterator.hasNext())) {
-                Node n = iterator.next();
-                if (n.getContent() instanceof Definition && n.getContent()!=null){
-                    Definition d = (Definition) n.getContent();
-                    if (!(d.getDefinition() instanceof BPMNDiagram) && d.getDefinition()!=null){
-                        names+=definitionUtils.getName(d.getDefinition()) +" ";
-                        //categ+= definitionHelper.getDefinitionCategory(d.getDefinition())+ " ";
-                    }
+//            //For Tasks in a row
+//            String names = "";
+//            //String categ= "";
+//            Iterator<Node> iterator = diagram.getGraph().nodes().iterator();
+//            while ((iterator.hasNext())) {
+//                Node n = iterator.next();
+//                if (n.getContent() instanceof Definition && n.getContent()!=null){
+//                    Definition d = (Definition) n.getContent();
+//                    if (!(d.getDefinition() instanceof BPMNDiagram) && d.getDefinition()!=null){
+//                        names+=definitionUtils.getName(d.getDefinition()) +" ";
+//                        //categ+= definitionHelper.getDefinitionCategory(d.getDefinition())+ " ";
+//                    }
+//                }
+//            }
+//            numberOfTasks.innerHTML = ""+names;
+
+            int nTasks=0;
+            int nUserTasks=0;
+            int nLackDescription=0;
+
+            //different data types
+            ProcessVariablesTotal.VariableTriplets[] tripplets=clientBPMNDocumentationService.processDocumentation(diagram).getProcess().getDataTotal().getVariablesAsTriplets();
+            HashMap<String,Integer> variables= new HashMap<>();
+            for(int i=0; i<tripplets.length; i++){
+                if(variables.containsKey(tripplets[i].getType().toString())) {
+                    variables.put(tripplets[i].getType().toString(), variables.get(tripplets[i].getType().toString()) + 1);
+                }
+                else {
+                    variables.put(tripplets[i].getType().toString(), 1);
                 }
             }
-            numberOfTasks.innerHTML = ""+names;
-            //noUserTask.innerHTML= ""+categ;
-        });
+            differentDataTypes.innerHTML= variables.size()+"/"+tripplets.length;
 
-        numberOfTasks.innerHTML = "10";
-        noUserTask.innerHTML = "Yes";
-        differentDataTypes.innerHTML = "10";
-        lackDescription.innerHTML = "2";
-        numberOfCustomTasks.innerHTML = "5";
+            //Get Tasks
+            ElementTotal[] elementTotals= clientBPMNDocumentationService.processDocumentation(diagram).getElementsDetails().getTotals();
+            for(int i=0; i<elementTotals.length; i++){
+                //number of user Tasks
+                if(elementTotals[i].getType().equals("Activities")){
+                    nUserTasks += elementTotals[i].getQuantity();
+                }
+                //Tasks without Start / Stop
+                if(!elementTotals[i].getType().equals("Start Events") && !elementTotals[i].getType().equals("End Events")){
+                    //number of Tasks
+                    nTasks += elementTotals[i].getQuantity();
+                    //get Description of each Tasks
+                    Element[] elements= elementTotals[i].getElements();
+                    for(int el=0; el<elements.length; el++){
+                        KeyValue[] keyValue= elements[el].getProperties();
+                        for(int kv=0; kv<keyValue.length; kv++){
+                            if(keyValue[kv].getKey().equals("Documentation") &&
+                                    (keyValue[kv].getValue().equals("") || keyValue[kv].getValue().equals("workitems-rest/index.html") ||
+                                            keyValue[kv].getValue().equals("jbpm-workitems-email/index.html") ||
+                                            keyValue[kv].getValue().equals("jbpm-workitems-webservice/index.html") ||
+                                            keyValue[kv].getValue().equals("jbpm-workitems-bpmn2/index.html"))){
+                                nLackDescription++;
+                            }
+                        }
+                    }
+                }
+
+            }
+            numberOfTasks.innerHTML = nTasks+"";
+            noUserTask.innerHTML = nUserTasks+"";
+            lackDescription.innerHTML = nLackDescription+"/"+nTasks;
+        });
         /** TD of workflow **/
 
         return refresh();

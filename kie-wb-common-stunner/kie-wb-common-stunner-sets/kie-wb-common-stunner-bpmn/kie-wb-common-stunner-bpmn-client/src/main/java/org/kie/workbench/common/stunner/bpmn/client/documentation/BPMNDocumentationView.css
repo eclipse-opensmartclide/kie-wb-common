@@ -34,6 +34,13 @@
     display: block;
 }
 
+#tdButton{
+    margin-left: 5px;
+    float: right;
+    width: 120px;
+    vertical-align: middle;
+}
+
 #tdContent{
     margin-left: 20px;
 }
