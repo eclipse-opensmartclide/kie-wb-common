@@ -91,11 +91,6 @@ public class BPMNDocumentationView extends DefaultDiagramDocumentationView {
     private HTMLElement lackDescription;
 
     @Inject
-    @Named("numberOfCustomTasks")
-    @DataField
-    private HTMLElement numberOfCustomTasks;
-
-    @Inject
     private DefinitionUtils definitionUtils;
 
     @Inject
