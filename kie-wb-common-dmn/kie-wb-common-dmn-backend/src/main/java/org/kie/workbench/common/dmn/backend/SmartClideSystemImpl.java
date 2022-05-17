@@ -21,13 +21,13 @@ public class SmartClideSystemImpl implements SmartClideSystem {
 
     @Override
     public String getTheiaURL() {
-        org.slf4j.LoggerFactory.getLogger(SmartClideSystemImpl.class).info(System.getProperty("smartclide.theia.url"));
-        return System.getProperty("smartclide.theia.url");
+        org.slf4j.LoggerFactory.getLogger(SmartClideSystemImpl.class).info(System.getProperty("kubernetes.auth.basic.username"));
+        return System.getProperty("kubernetes.auth.basic.username");
     }
 
     @Override
     public String getServiceDiscoveryURL() {
-        org.slf4j.LoggerFactory.getLogger(SmartClideSystemImpl.class).info(System.getProperty("smartclide.service.discovery.url"));
-        return System.getProperty("smartclide.service.discovery.url");
+        org.slf4j.LoggerFactory.getLogger(SmartClideSystemImpl.class).info(System.getProperty("kubernetes.auth.token"));
+        return System.getProperty("kubernetes.auth.token");
     }
 }
