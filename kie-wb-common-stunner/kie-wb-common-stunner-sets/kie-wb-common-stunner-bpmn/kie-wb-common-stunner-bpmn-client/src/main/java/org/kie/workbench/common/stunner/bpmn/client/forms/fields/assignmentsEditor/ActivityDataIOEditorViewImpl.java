@@ -141,7 +141,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         Row SmartCLIDERowInner1 = new Row();
         Column SmartCLIDEColumnInner1 = new Column(ColumnSize.MD_12);
         SmartCLIDERowInner1.add(SmartCLIDEColumnInner1);
-        Label label = new Label("SmartCLIDE service discovery:"+urlServiceDiscovery);
+        Label label = new Label("SmartCLIDE service discovery");
         label.setPull(Pull.LEFT);
         label.getElement().setAttribute("style", "font-size: 16px; margin-top: 20px;" +
                 " margin-bottom: 10px; font-weight: 600; line-height: 1.1; color: inherit;" +
@@ -294,7 +294,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         SmartCLIDERowInnerCreation2.add(SmartCLIDEColumnInnerCreation2);
         Div divServiceCreation = new Div();
         divServiceCreation.getElement().setAttribute("style","display: flex; justify-content: flex-start;");
-        Button btnCreate = new Button("Create:"+urlTheia);
+        Button btnCreate = new Button("Create");
         btnCreate.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
         btnCreate.getElement().getStyle().setColor("#ffffff");
         btnCreate.addClickHandler(clickEvent1 -> {
