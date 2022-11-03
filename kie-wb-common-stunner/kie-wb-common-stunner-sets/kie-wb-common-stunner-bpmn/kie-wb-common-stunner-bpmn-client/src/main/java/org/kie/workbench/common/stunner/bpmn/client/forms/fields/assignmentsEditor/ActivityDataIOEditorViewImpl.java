@@ -90,6 +90,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     private String urlTheia = "";
     private String urlServiceDiscovery = "";
 
+    private String keycloakToken = "";
+
     @Inject
     private Caller<SmartClideSystem> smartClideSystem;
 
@@ -156,6 +158,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnSearch.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
         btnSearch.getElement().getStyle().setColor("#ffffff");
         btnSearch.setPull(Pull.LEFT);
+
+        //Add token listener and send init message to parent
+        keycloakToken = listenerForMessage();
+        postMessage();
+
+        //Add click listener for service search
         btnSearch.addClickHandler(clickEvent -> {
             //Create List with ListItems
             ListGroup listGroup= new ListGroup();
@@ -163,29 +171,27 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
             //Call Service Discovery API
             try {
-                RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, urlServiceDiscovery);
-                builder.setHeader("Content-Type", "application/json");
-                String jsonInputString3 = "\"{\\\"full_name\\\":{\\\"0\\\":\\\"" + this.taskTitle +
-                            "\\\"}, \\\"description\\\": {\\\"0\\\":\\\"" + this.taskDocumentation + "\\\"}}\"";
-                Request response = builder.sendRequest(jsonInputString3, new RequestCallback() {
+                RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlServiceDiscovery+"/services?search="
+                        +this.taskTitle+" "+this.taskDocumentation);
+                builder.setHeader("Authorization", "Bearer " + keycloakToken);
+                Request response = builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) { }
                     public void onResponseReceived(Request request, Response response) {
-                        String sss= response.getText().substring(1, response.getText().length()-2);
-                        sss = sss.replace("\\\"{", "{");
-                        sss = sss.replace("}\\\"", "}");
-                        sss = sss.replace("\\\\\\\"", "\"");
-                        sss = sss.replace("\\\\\\\\\"", "\\\"");
+                        String sss= response.getText();
                         JSONArray jsonArray = (JSONArray) JSONParser.parse(sss);
 
+                        int sizeResp= jsonArray.size();
+                        if(sizeResp>10){
+                            sizeResp=10;
+                        }
+
                         //For each service create a List Item
-                        for(int i=0; i<jsonArray.size(); i++) {
+                        for(int i=0; i<sizeResp; i++) {
                             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                            Double score= Double.parseDouble(jsonObject.get("_score").toString());
-                            JSONObject jsonObject2= (JSONObject) jsonObject.get("_source");
-                            String fullName = jsonObject2.get("full_name").toString().substring(1, jsonObject2.get("full_name").toString().length()-1);
-                            String description = jsonObject2.get("description").toString().substring(1, jsonObject2.get("description").toString().length()-1);
-                            String link = jsonObject2.get("link").toString().substring(1, jsonObject2.get("link").toString().length()-1);
-                            String source = jsonObject2.get("source").toString().substring(1, jsonObject2.get("source").toString().length()-1);
+                            String id = jsonObject.get("id").toString().substring(1, jsonObject.get("id").toString().length()-1);
+                            String fullName = jsonObject.get("name").toString().substring(1, jsonObject.get("name").toString().length()-1);
+                            String description = jsonObject.get("description").toString().substring(1, jsonObject.get("description").toString().length()-1);
+                            String link = jsonObject.get("url").toString().substring(1, jsonObject.get("url").toString().length()-1);
 
                             ListGroupItem listGroupItem1= new ListGroupItem();
                             Div divOuter = new Div();
@@ -194,12 +200,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             Span spanName = new Span();
                             spanName.setText(fullName);
                             spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
-                            Anchor anchor = new Anchor("("+ source +")",link);
+                            Anchor anchor = new Anchor("("+ link +")",link);
                             anchor.getElement().setAttribute("target","_blank");
-                            Span spanScore = new Span();
-                            spanScore.setText("score: " + score);
-                            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
-                            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+//                            Span spanScore = new Span();
+//                            spanScore.setText("score: " + score);
+//                            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
+//                            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
                             Span spanDescriptionOuter = new Span();
                             Span spanDescription = new Span();
                             if(description.length() > 50){
@@ -230,25 +236,25 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
                             divInner1.add(spanName);
                             divInner1.add(anchor);
-                            divInner1.add(spanScore);
+//                            divInner1.add(spanScore);
                             divInner1.add(spanDescriptionOuter);
                             divOuter.add(divInner1);
                             Div divInner2 = new Div();
                             divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
-                            Button btnDeploy = new Button("Deploy");
-                            //btnDeploy.addClickHandler(clickEvent1 -> textArea.setText("Deploy "+spanName.getText()));
-                            Button btnUse = new Button("Use");
-                            btnUse.addClickHandler(clickEvent1 -> {
-                                //add assignment to variable
-                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
-                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
-                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
-                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
-                                    }
-                                }
-                            });
-                            divInner2.add(btnDeploy);
-                            divInner2.add(btnUse);
+                            Button btnFetch = new Button("Fetch code");
+                            btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia+"?serviceID="+id,"_blank",""));
+//                            Button btnUse = new Button("Use");
+//                            btnUse.addClickHandler(clickEvent1 -> {
+//                                //add assignment to variable
+//                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
+//                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
+//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
+//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
+//                                    }
+//                                }
+//                            });
+                            divInner2.add(btnFetch);
+//                            divInner2.add(btnUse);
                             divOuter.add(divInner2);
                             listGroupItem1.add(divOuter);
                             listGroup.add(listGroupItem1);
@@ -298,8 +304,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnCreate.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
         btnCreate.getElement().getStyle().setColor("#ffffff");
         btnCreate.addClickHandler(clickEvent1 -> {
-            //ToDo
-            //start Theia
+            //start Service Creation workflow
             Window.open(urlTheia,"_blank","");
         });
         divServiceCreation.add(btnCreate);
@@ -334,6 +339,20 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         setWidth("1200px");
         setBody(container);
     }
+
+    public static native void postMessage() /*-{
+      $wnd.parent.postMessage({type: 1}, "*");
+    }-*/;
+    public static native String listenerForMessage() /*-{
+      $wnd.addEventListener("message", ({ data }) => {
+        console.log("message...");
+        if(typeof(data) === 'object' && 'type' in data){
+            console.log("RECEIVED!");
+            console.log("RECEIVED ", data.content);
+            return data.content;
+        }
+      }
+    }-*/;
 
     @Override
     public void onHide(final Event e) {

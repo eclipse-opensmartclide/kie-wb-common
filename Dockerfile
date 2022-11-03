@@ -16,8 +16,8 @@ RUN mvn -f common/pom.xml install -DskipTests
 ## Kie Distributions Build ##
 RUN apt-get update && \
     apt-get install git
-RUN git clone https://github.com/eclipse-researchlabs/kie-wb-distributions
-RUN cd kie-wb-distributions && git checkout b1f555795a7219f5361aec098d914a5720a61164
+RUN git clone https://github.com/kiegroup/kie-wb-distributions
+RUN cd kie-wb-distributions && git checkout 7.61.0.Final
 RUN mvn -f kie-wb-distributions/business-central-parent/business-central-webapp install -DskipTests
 
 
