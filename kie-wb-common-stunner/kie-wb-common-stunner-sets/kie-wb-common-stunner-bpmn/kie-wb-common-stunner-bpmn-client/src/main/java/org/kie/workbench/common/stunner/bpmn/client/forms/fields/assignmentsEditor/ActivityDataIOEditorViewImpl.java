@@ -90,6 +90,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     private String urlTheia = "";
     private String urlServiceDiscovery = "";
 
+    private String keycloakToken = "";
+
     @Inject
     private Caller<SmartClideSystem> smartClideSystem;
 
@@ -156,6 +158,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnSearch.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
         btnSearch.getElement().getStyle().setColor("#ffffff");
         btnSearch.setPull(Pull.LEFT);
+
+        //Add token listener and send init message to parent
+        keycloakToken = listenerForMessage();
+        postMessage();
+
+        //Add click listener for service search
         btnSearch.addClickHandler(clickEvent -> {
             //Create List with ListItems
             ListGroup listGroup= new ListGroup();
@@ -165,6 +173,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             try {
                 RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, urlServiceDiscovery+"/services?search="
                         +this.taskTitle+" "+this.taskDocumentation);
+                builder.setHeader("Authorization", "Bearer " + keycloakToken);
                 Request response = builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) { }
                     public void onResponseReceived(Request request, Response response) {
@@ -330,6 +339,20 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         setWidth("1200px");
         setBody(container);
     }
+
+    public static native void postMessage() /*-{
+      $wnd.parent.postMessage({type: 1}, "*");
+    }-*/;
+    public static native String listenerForMessage() /*-{
+      $wnd.addEventListener("message", ({ data }) => {
+        console.log("message...");
+        if(typeof(data) === 'object' && 'type' in data){
+            console.log("RECEIVED!");
+            console.log("RECEIVED ", data.content);
+            return data.content;
+        }
+      }
+    }-*/;
 
     @Override
     public void onHide(final Event e) {
