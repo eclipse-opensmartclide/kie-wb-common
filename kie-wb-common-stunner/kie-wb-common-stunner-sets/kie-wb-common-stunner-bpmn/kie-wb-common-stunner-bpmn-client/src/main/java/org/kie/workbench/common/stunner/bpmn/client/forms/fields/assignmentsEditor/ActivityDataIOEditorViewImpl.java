@@ -344,11 +344,11 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
       $wnd.parent.postMessage({type: 1}, "*");
     }-*/;
     public static native String listenerForMessage() /*-{
-      $wnd.addEventListener("message", ({ data }) => {
+      $wnd.onmessage = (e) => {
         console.log("message...");
-        if(typeof(data) === 'object' && 'type' in data){
+        if(typeof(e.data) === 'object' && 'type' in e.data){
             console.log("RECEIVED!");
-            console.log("RECEIVED ", data.content);
+            console.log("RECEIVED ", e.data.content);
             return data.content;
         }
       }
