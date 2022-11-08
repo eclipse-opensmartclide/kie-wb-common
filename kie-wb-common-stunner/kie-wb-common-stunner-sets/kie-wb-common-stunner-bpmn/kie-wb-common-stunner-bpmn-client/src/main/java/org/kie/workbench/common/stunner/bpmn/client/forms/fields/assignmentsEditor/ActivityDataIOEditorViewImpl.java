@@ -349,7 +349,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         if(typeof(e.data) === 'object' && 'type' in e.data){
             console.log("RECEIVED!");
             console.log("RECEIVED ", e.data.content);
-            return data.content;
+            return e.data.content;
         }
       }
     }-*/;
