@@ -90,7 +90,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     private String urlTheia = "";
     private String urlServiceDiscovery = "";
 
-    private String keycloakToken = "";
+    private static String keycloakToken = "";
+
+    public void changeKeycloakToken(String keycloakToken){
+        this.keycloakToken = keycloakToken;
+        printToken("Assigned new token: " + keycloakToken);
+    }
 
     @Inject
     private Caller<SmartClideSystem> smartClideSystem;
@@ -160,7 +165,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         btnSearch.setPull(Pull.LEFT);
 
         //Add token listener and send init message to parent
-        keycloakToken = listenerForMessage();
+        listenerForMessage(this);
         postMessage();
 
         //Add click listener for service search
@@ -168,6 +173,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             //Create List with ListItems
             ListGroup listGroup= new ListGroup();
             listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
+
+            printToken("Token for request is: " + keycloakToken);
 
             //Call Service Discovery API
             try {
@@ -343,15 +350,16 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     public static native void postMessage() /*-{
       $wnd.parent.postMessage({type: 1}, "*");
     }-*/;
-    public static native String listenerForMessage() /*-{
+    public static native void listenerForMessage(ActivityDataIOEditorViewImpl x) /*-{
       $wnd.onmessage = function(e) {
-        console.log("message...");
         if(typeof(e.data) === 'object' && 'type' in e.data){
-            console.log("RECEIVED!");
-            console.log("RECEIVED ", e.data.content);
-            return e.data.content;
+            console.log("RECEIVED " + e.data.content);
+            x.@org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl::changeKeycloakToken(Ljava/lang/String;)(e.data.content);
         }
       }
+    }-*/;
+    public static native void printToken(String token) /*-{
+      console.log("Token is: "+ token);
     }-*/;
 
     @Override
