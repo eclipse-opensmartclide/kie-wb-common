@@ -158,7 +158,8 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>jbpm-simulation</artifactId>
+      <artifactId>jbpm-simulation-opensmartclide</artifactId>
+      <version>7.61.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse</groupId>
