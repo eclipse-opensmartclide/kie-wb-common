@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,7 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.jbpm.simulation;
 
@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
 import org.jbpm.simulation.converter.JSONPathFormatConverter;
 import org.jbpm.simulation.helper.TestUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,30 +47,30 @@ public class PathFinderTest {
         expectedIds.add("_2");
         expectedIds.add("_2-_3");
         expectedIds.add("_3");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-UserTask.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(1, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(1, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(1, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSinglePath");
-       
+
     }
 
     @Test
     public void testExclusiveSplit() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("_1-_2");
@@ -83,8 +83,8 @@ public class PathFinderTest {
         expectedIds1.add("_6");
         expectedIds1.add("_6-_7");
         expectedIds1.add("_7");
-        
-        
+
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("_1-_2");
@@ -97,31 +97,31 @@ public class PathFinderTest {
         expectedIds2.add("_6");
         expectedIds2.add("_6-_7");
         expectedIds2.add("_7");
-        
-        
+
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ExclusiveSplit.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testExclusiveSplit");
-       
+
     }
-    
+
     @Test
     public void testInclusiveSplit() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("_1-_2");
@@ -129,9 +129,9 @@ public class PathFinderTest {
         expectedIds1.add("_2-_3");
         expectedIds1.add("_3");
         expectedIds1.add("_3-_6");
-        expectedIds1.add("_6");    
-        
-        
+        expectedIds1.add("_6");
+
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("_1-_2");
@@ -140,8 +140,8 @@ public class PathFinderTest {
         expectedIds2.add("_4");
         expectedIds2.add("_4-_7");
         expectedIds2.add("_7");
-        
-        
+
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_1");
         expectedIds3.add("_1-_2");
@@ -150,8 +150,8 @@ public class PathFinderTest {
         expectedIds3.add("_5");
         expectedIds3.add("_5-_8");
         expectedIds3.add("_8");
-        
-        
+
+
         List<String> expectedIds4 = new ArrayList<String>();
         expectedIds4.add("_1");
         expectedIds4.add("_1-_2");
@@ -159,7 +159,7 @@ public class PathFinderTest {
         expectedIds4.add("_2-_3");
         expectedIds4.add("_3");
         expectedIds4.add("_3-_6");
-        expectedIds4.add("_6"); 
+        expectedIds4.add("_6");
         expectedIds4.add("_2-_4");
         expectedIds4.add("_4");
         expectedIds4.add("_4-_7");
@@ -168,7 +168,7 @@ public class PathFinderTest {
         expectedIds4.add("_5");
         expectedIds4.add("_5-_8");
         expectedIds4.add("_8");
-        
+
         List<String> expectedIds5 = new ArrayList<String>();
         expectedIds5.add("_1");
         expectedIds5.add("_1-_2");
@@ -176,12 +176,12 @@ public class PathFinderTest {
         expectedIds5.add("_2-_3");
         expectedIds5.add("_3");
         expectedIds5.add("_3-_6");
-        expectedIds5.add("_6"); 
+        expectedIds5.add("_6");
         expectedIds5.add("_2-_4");
         expectedIds5.add("_4");
         expectedIds5.add("_4-_7");
         expectedIds5.add("_7");
-        
+
         List<String> expectedIds6 = new ArrayList<String>();
         expectedIds6.add("_1");
         expectedIds6.add("_1-_2");
@@ -194,7 +194,7 @@ public class PathFinderTest {
         expectedIds6.add("_5");
         expectedIds6.add("_5-_8");
         expectedIds6.add("_8");
-        
+
         List<String> expectedIds7 = new ArrayList<String>();
         expectedIds7.add("_1");
         expectedIds7.add("_1-_2");
@@ -207,27 +207,27 @@ public class PathFinderTest {
         expectedIds7.add("_5");
         expectedIds7.add("_5-_8");
         expectedIds7.add("_8");
-        
-        
+
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-InclusiveSplit.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(7, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3, expectedIds4, expectedIds5, expectedIds6, expectedIds7));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(7, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(7, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testInclusiveSplit");
     }
-    
+
     @Test
     public void testParallelGateway() throws IOException {
         List<String> expectedIds1 = new ArrayList<String>();
@@ -242,27 +242,27 @@ public class PathFinderTest {
         expectedIds1.add("_5");
         expectedIds1.add("_4-_6");
         expectedIds1.add("_6");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ParallelSplit.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
- 
+
         assertNotNull(paths);
         assertEquals(1, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(1, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(1, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testParallelGateway");
-        
+
     }
-    
+
     @Test
     public void testParallelAndExclusiveGateway() throws IOException {
         List<String> expectedIds1 = new ArrayList<String>();
@@ -281,8 +281,8 @@ public class PathFinderTest {
         expectedIds1.add("ScriptTask_2");
         expectedIds1.add("SequenceFlow_5");
         expectedIds1.add("_5");
-        
-        
+
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("_1-_2");
@@ -299,29 +299,29 @@ public class PathFinderTest {
         expectedIds2.add("ScriptTask_1");
         expectedIds2.add("SequenceFlow_4");
         expectedIds2.add("_5");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ParallelAndExclusiveSplit.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testParallelAndExclusiveGateway");
     }
-    
+
     @Test
     public void testMultipleStartEvents() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("SequenceFlow_2");
@@ -329,8 +329,8 @@ public class PathFinderTest {
         expectedIds1.add("SequenceFlow_4");
         expectedIds1.add("UserTask_1");
         expectedIds1.add("SequenceFlow_1");
-        expectedIds1.add("EndEvent_1");     
-        
+        expectedIds1.add("EndEvent_1");
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("StartEvent_1");
         expectedIds2.add("SequenceFlow_3");
@@ -339,29 +339,29 @@ public class PathFinderTest {
         expectedIds2.add("UserTask_1");
         expectedIds2.add("SequenceFlow_1");
         expectedIds2.add("EndEvent_1");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-MultipleStartEventProcess.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testMultipleStartEvents");
     }
-    
+
     @Test
     public void testBoundaryEventOnTask() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("SequenceFlow_1");
@@ -369,9 +369,9 @@ public class PathFinderTest {
         expectedIds1.add("$reverseprops$BoundaryEvent_2");
         expectedIds1.add("SequenceFlow_2");
         expectedIds1.add("UserTask_2");
-        expectedIds1.add("SequenceFlow_3");    
+        expectedIds1.add("SequenceFlow_3");
         expectedIds1.add("EndEvent_1");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("SequenceFlow_1");
@@ -381,7 +381,7 @@ public class PathFinderTest {
         expectedIds2.add("ScriptTask_1");
         expectedIds2.add("SequenceFlow_4");
         expectedIds2.add("EndEvent_2");
-        
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_1");
         expectedIds3.add("SequenceFlow_1");
@@ -395,26 +395,26 @@ public class PathFinderTest {
         expectedIds3.add("ScriptTask_1");
         expectedIds3.add("SequenceFlow_4");
         expectedIds3.add("EndEvent_2");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-BoundaryMessageEventOnTask.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(3, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(3, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(3, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testBoundaryEventOnTask");
     }
-    
+
     @Test
     public void testSignalThrowEndEventWithCatch() throws IOException {
         List<String> expectedIds1 = new ArrayList<String>();
@@ -428,7 +428,7 @@ public class PathFinderTest {
         expectedIds1.add("_5");
         expectedIds1.add("_5-_6");
         expectedIds1.add("_6");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_4");
         expectedIds2.add("_4-_5");
@@ -436,28 +436,28 @@ public class PathFinderTest {
         expectedIds2.add("_5-_6");
         expectedIds2.add("_6");
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-IntermediateCatchEventSignal.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSignalThrowEndEventWithCatch");
     }
-    
-    
+
+
     @Test
     public void testEmbeddedSubProcessWithExclusiveSplit() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("StartEvent_1");
         expectedIds1.add("SequenceFlow_2");
@@ -472,7 +472,7 @@ public class PathFinderTest {
         expectedIds1.add("EndEvent_2");
         expectedIds1.add("SequenceFlow_1");
         expectedIds1.add("EndEvent_1");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("StartEvent_1");
         expectedIds2.add("SequenceFlow_2");
@@ -487,49 +487,49 @@ public class PathFinderTest {
         expectedIds2.add("EndEvent_2");
         expectedIds2.add("SequenceFlow_1");
         expectedIds2.add("EndEvent_1");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-EmbeddedSubProcessWithExclusiveSplit.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
-        
+
         try {
-			assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testEmbeddedSubProcessWithExclusiveSplit");
     }
-    
+
     @Test
     public void testAdHocProcess() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
-        expectedIds1.add("_062B2E1F-5B9A-4736-830F-CE1701A794F4"); 
-        
-        
+        expectedIds1.add("_062B2E1F-5B9A-4736-830F-CE1701A794F4");
+
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_48322753-5663-47E0-AC6C-6EDA2E65E691");
-        
-        
+
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_58BB442E-1052-4AFB-8429-918A34319C80");
-        
-        
+
+
         List<String> expectedIds4 = new ArrayList<String>();
         expectedIds4.add("_4CB6EAA2-C289-4783-9B47-CF1646E5E627");
         expectedIds4.add("_4D90EA4D-A7BA-430B-9B70-475D55F49620");
         expectedIds4.add("_D71F67D1-B368-4AC3-8701-0553B9E5C75A");
         expectedIds4.add("_F8016A84-8E0E-4C52-8E5A-BDD36C7CC12E");
         expectedIds4.add("_B0BC552A-0A60-41F3-8B29-EEFD93352108");
-        
+
         List<String> expectedIds5 = new ArrayList<String>();
         expectedIds5.add("_4CB6EAA2-C289-4783-9B47-CF1646E5E627");
         expectedIds5.add("_4D90EA4D-A7BA-430B-9B70-475D55F49620");
@@ -537,29 +537,29 @@ public class PathFinderTest {
         expectedIds5.add("_E70AC4B9-CB04-48BF-9475-F9719BD016B3");
         expectedIds5.add("_DAFCB73F-D66C-49CA-9EE4-5AA0B822F49E");
 
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-AdHocProcess.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(5, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3, expectedIds4, expectedIds5));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-			assertEquals(5, ((JSONObject)jsonPaths.get("paths")).length());
-		} catch (JSONException e) {
-			fail(e.getMessage());
-		}
-        
+            assertEquals(5, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
+            fail(e.getMessage());
+        }
+
         TestUtils.printOutPaths(paths, jsonPaths, "testAdHocProcess");
     }
-    
+
     @Test
     public void testBoundaryEventOnTaskCancelActivity() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("SequenceFlow_1");
@@ -567,9 +567,9 @@ public class PathFinderTest {
         expectedIds1.add("$reverseprops$BoundaryEvent_2");
         expectedIds1.add("SequenceFlow_2");
         expectedIds1.add("UserTask_2");
-        expectedIds1.add("SequenceFlow_3");    
+        expectedIds1.add("SequenceFlow_3");
         expectedIds1.add("EndEvent_1");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("SequenceFlow_1");
@@ -579,29 +579,29 @@ public class PathFinderTest {
         expectedIds2.add("ScriptTask_1");
         expectedIds2.add("SequenceFlow_4");
         expectedIds2.add("EndEvent_2");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-BoundaryMessageEventOnTaskCancel.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testBoundaryEventOnTask");
     }
-    
+
     @Test
     public void testParallelAndExclusiveWithTimer() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_48218CD9-67F4-4B55-AF0F-72F0A44D2FBF");
         expectedIds1.add("_3AC5BE86-60E9-4909-9A09-4C9F4FE29F13");
@@ -609,16 +609,16 @@ public class PathFinderTest {
         expectedIds1.add("_0528DF86-8063-4C4E-9963-CA8DC8535264");
         expectedIds1.add("_1DF2159B-5D4D-447E-9B60-62D4CF2DE37A");
         expectedIds1.add("_C3CF4D64-F5B2-4381-921C-C5A5700EA797");
-        expectedIds1.add("_2DD42DF2-256B-4F18-B35B-431E59B37281");    
+        expectedIds1.add("_2DD42DF2-256B-4F18-B35B-431E59B37281");
         expectedIds1.add("_E19D4E54-A0DA-4706-B47D-637F5D6D87CD");
         expectedIds1.add("_C104B721-B9DB-498A-9653-35C6BDD7BB27");
         expectedIds1.add("_06430F17-E208-45B0-9923-BABBDBBA4FF8");
         expectedIds1.add("_AA1AE3BC-9DD1-497D-B178-0B2C41984A59");
-        expectedIds1.add("_6614FE05-0CF5-4713-BA33-7925526615C4");    
+        expectedIds1.add("_6614FE05-0CF5-4713-BA33-7925526615C4");
         expectedIds1.add("_A952DDA0-43D7-4731-ADDE-1DFD889CA0F9");
         expectedIds1.add("_0F4D25BC-BFCE-4F45-B8BC-D0DF7BE0EF3D");
         expectedIds1.add("_9FAC6652-C112-411A-B7C4-D3CCB9C201EC");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_48218CD9-67F4-4B55-AF0F-72F0A44D2FBF");
         expectedIds2.add("_3AC5BE86-60E9-4909-9A09-4C9F4FE29F13");
@@ -639,38 +639,38 @@ public class PathFinderTest {
         expectedIds2.add("_E24574AA-58CE-4431-A5FA-1BE4B2C4255B");
         expectedIds2.add("_0BBA6FAE-0E24-4706-A507-2175FDC4EC05");
         expectedIds2.add("_14A3D974-9822-4C5B-A1A0-0BD0FFD6597E");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ParallelAndExclusiveWithTimer.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testBoundaryEventOnTask");
     }
-    
+
     @Test
     public void testAdHocSubprocess() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1");
         expectedIds1.add("_1-_2");
         expectedIds1.add("_2-1");
         expectedIds1.add("_2-_3");
         expectedIds1.add("_3");
-        expectedIds1.add("_3-_4");    
+        expectedIds1.add("_3-_4");
         expectedIds1.add("_4");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1");
         expectedIds2.add("_1-_2");
@@ -681,27 +681,27 @@ public class PathFinderTest {
         expectedIds2.add("_3");
         expectedIds2.add("_3-_4");
         expectedIds2.add("_4");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-AdHocSubProcess.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testBoundaryEventOnTask");
     }
-    
-   
+
+
     @Test
     public void testSimpleEmbeddedSubprocessPAth() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -714,27 +714,27 @@ public class PathFinderTest {
         expectedIds.add("EndEvent_2");
         expectedIds.add("SequenceFlow_1");
         expectedIds.add("EndEvent_1");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-SimpleEmbeddedSubprocess.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(1, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(1, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(1, (jsonPaths.get("paths").getAsJsonObject().size()));
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSinglePath");
-       
+
     }
-    
+
     @Test
     public void testNestedEmbeddedSubprocessPAth() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -751,27 +751,27 @@ public class PathFinderTest {
         expectedIds.add("EndEvent_2");
         expectedIds.add("SequenceFlow_1");
         expectedIds.add("EndEvent_1");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-NestedEmbeddedSubprocess.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(1, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(1, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(1, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSinglePath");
-       
+
     }
-    
+
     @Test
     public void testTwoExclusiveGatewaysPaths() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -784,7 +784,7 @@ public class PathFinderTest {
         expectedIds.add("_B74E134D-94B9-43FE-B676-AC66FDD7ACEC");
         expectedIds.add("_27A5ADFE-AE4D-4CA9-938F-8D312E71C7CF");
         expectedIds.add("_E78D4D9E-D6B3-4505-933D-7F1E56C6C35A");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_35CEB9B5-9B97-4A03-9CC0-F0F2B75CC48F");
         expectedIds2.add("_019AADF3-AEC3-465E-8F42-978F9514D812");
@@ -799,7 +799,7 @@ public class PathFinderTest {
         expectedIds2.add("_F2BF3F10-2A9B-4A62-9644-987A57ECFB0D");
         expectedIds2.add("_FA2FB700-8DF7-464B-B245-386072170925");
         expectedIds2.add("_87E15B98-AA2B-44EE-A22F-73B1E2B18F0C");
-        
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_35CEB9B5-9B97-4A03-9CC0-F0F2B75CC48F");
         expectedIds3.add("_019AADF3-AEC3-465E-8F42-978F9514D812");
@@ -814,27 +814,27 @@ public class PathFinderTest {
         expectedIds3.add("_EA95786A-6513-4CF6-8391-C6D5F03E2A95");
         expectedIds3.add("_122FE6F7-4116-45D0-97F1-8EDAEB5FBBD5");
         expectedIds3.add("_DE403D12-FF83-47C3-AB97-92D16199262F");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-TwoExclusiveGateways.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(3, paths.size());
         assertTrue("Found activities do not match expected", TestUtils.matchExpected(paths, expectedIds, expectedIds2, expectedIds3));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(3, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(3, (jsonPaths.get("paths").getAsJsonObject()).size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSinglePath");
-        
+
     }
-    
+
     @Test
     public void testTwoExclusiveGatewaysWithParallelPaths() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -847,7 +847,7 @@ public class PathFinderTest {
         expectedIds.add("_B74E134D-94B9-43FE-B676-AC66FDD7ACEC");
         expectedIds.add("_27A5ADFE-AE4D-4CA9-938F-8D312E71C7CF");
         expectedIds.add("_E78D4D9E-D6B3-4505-933D-7F1E56C6C35A");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_35CEB9B5-9B97-4A03-9CC0-F0F2B75CC48F");
         expectedIds2.add("_019AADF3-AEC3-465E-8F42-978F9514D812");
@@ -862,7 +862,7 @@ public class PathFinderTest {
         expectedIds2.add("_EA95786A-6513-4CF6-8391-C6D5F03E2A95");
         expectedIds2.add("_122FE6F7-4116-45D0-97F1-8EDAEB5FBBD5");
         expectedIds2.add("_DE403D12-FF83-47C3-AB97-92D16199262F");
-        
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_35CEB9B5-9B97-4A03-9CC0-F0F2B75CC48F");
         expectedIds3.add("_019AADF3-AEC3-465E-8F42-978F9514D812");
@@ -873,7 +873,7 @@ public class PathFinderTest {
         expectedIds3.add("_35E32997-CCDC-4DCA-8D29-94A7EEEF7BD9");
         expectedIds3.add("_EB6847DE-9A18-489B-A538-F579FC8660E2");
         expectedIds3.add("_AC1EC569-62BB-4DC3-8904-D4534E81AE53");
-        
+
         expectedIds3.add("SequenceFlow_1");
         expectedIds3.add("ParallelGateway_1");
         expectedIds3.add("SequenceFlow_2");
@@ -884,7 +884,7 @@ public class PathFinderTest {
         expectedIds3.add("SequenceFlow_4");
         expectedIds3.add("ParallelGateway_2");
         expectedIds3.add("SequenceFlow_7");
-        
+
         expectedIds3.add("Task_2");
         expectedIds3.add("SequenceFlow_8");
         expectedIds3.add("ParallelGateway_3");
@@ -897,43 +897,43 @@ public class PathFinderTest {
         expectedIds3.add("ParallelGateway_4");
         expectedIds3.add("SequenceFlow_13");
         expectedIds3.add("_87E15B98-AA2B-44EE-A22F-73B1E2B18F0C");
-        
-        
+
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-TwoExclusiveGatewaysWithParallel.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(3, paths.size());
         assertTrue("Found activities do not match expected", TestUtils.matchExpected(paths, expectedIds, expectedIds2, expectedIds3));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(3, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(3, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, null, "testSinglePath");
-        
+
     }
-    
-    
+
+
     @Test
     public void testExclusiveGatewayLoop() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_1513E9B5-1FB8-45D7-8D04-F2AD2AA7848E");
         expectedIds1.add("_CCE6EF6C-BC9B-43A8-BCFE-50262AB1A20E");
         expectedIds1.add("_F8ABE422-3DB4-426C-BD31-0F8392BB0792");
         expectedIds1.add("_6984B84F-2993-4D56-A67E-F263E779A542");
         expectedIds1.add("_27E3C08E-D2EB-4DFF-B8F2-509B23511377");
-        expectedIds1.add("_A51F590A-454C-4710-ADEC-7DC3D4BEA4D1");    
+        expectedIds1.add("_A51F590A-454C-4710-ADEC-7DC3D4BEA4D1");
         expectedIds1.add("_C78A23B2-CFEB-469B-840C-1DEAA149FA44");
-        expectedIds1.add("_E2F40D66-5CF2-412F-A743-03F8885CF1F4");    
+        expectedIds1.add("_E2F40D66-5CF2-412F-A743-03F8885CF1F4");
         expectedIds1.add("_E6A42A45-171E-4B9A-BE03-DA2748ED2DC7");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_1513E9B5-1FB8-45D7-8D04-F2AD2AA7848E");
         expectedIds2.add("_CCE6EF6C-BC9B-43A8-BCFE-50262AB1A20E");
@@ -944,32 +944,32 @@ public class PathFinderTest {
         expectedIds2.add("_C78A23B2-CFEB-469B-840C-1DEAA149FA44");
         expectedIds2.add("_8449063D-4DAB-4E8C-A926-26F823FB903F");
         expectedIds2.add("_BBD03DEE-845F-4050-9269-A02D40973297");
-        expectedIds2.add("_28A7898F-3EC5-488B-8E0B-439134824D4A");    
-        expectedIds2.add("_E2F40D66-5CF2-412F-A743-03F8885CF1F4");    
+        expectedIds2.add("_28A7898F-3EC5-488B-8E0B-439134824D4A");
+        expectedIds2.add("_E2F40D66-5CF2-412F-A743-03F8885CF1F4");
         expectedIds2.add("_E6A42A45-171E-4B9A-BE03-DA2748ED2DC7");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ExclusiveGatewayLoop.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testExclusiveGatewayLoop");
     }
-    
+
     @Test
     public void testEmbeddedSubProcessWithExclusiveSplitBefore() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds1.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -993,7 +993,7 @@ public class PathFinderTest {
         expectedIds1.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds1.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
 
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds2.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -1016,7 +1016,7 @@ public class PathFinderTest {
         expectedIds2.add("_6C58C120-DB65-4993-918E-F3076948884A");
         expectedIds2.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds2.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
-        
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds3.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -1040,7 +1040,7 @@ public class PathFinderTest {
         expectedIds3.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds3.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
 
-        
+
         List<String> expectedIds4 = new ArrayList<String>();
         expectedIds4.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds4.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -1064,29 +1064,29 @@ public class PathFinderTest {
         expectedIds4.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds4.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
 
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-EmbeddedSubProcessWithExclusiveSplitBefore.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(4, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3, expectedIds4));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(4, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(4, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testEmbeddedSubProcessWithExclusiveSplitBefore");
     }
-    
+
     @Test
     public void testEmbeddedSubProcessWithParallelSplitBefore() throws IOException {
-        
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds1.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -1112,7 +1112,7 @@ public class PathFinderTest {
         expectedIds1.add("_6C58C120-DB65-4993-918E-F3076948884A");
         expectedIds1.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds1.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_D05EC83F-DF0B-421F-81CF-1A96922A9A56");
         expectedIds2.add("_395DF5C0-B3AC-4786-94EC-C448A68CED6B");
@@ -1138,29 +1138,29 @@ public class PathFinderTest {
         expectedIds2.add("_6C58C120-DB65-4993-918E-F3076948884A");
         expectedIds2.add("_545CAF31-E29E-4182-8B9D-A723920C05A4");
         expectedIds2.add("_4B30F278-9FB1-4268-8A70-2F9810383A81");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-EmbeddedSubProcessWithParallelSplitBefore.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testEmbeddedSubProcessWithParallelSplitBefore");
     }
-    
+
     @Test
     public void testSubProcessWithBoundaryEvent() throws IOException {
-       
+
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_9702F903-708E-4AF0-B6BC-354C07E0EAD8");
         expectedIds1.add("_C4EBB271-64BA-4277-9348-6FA2946BAA55");
@@ -1181,7 +1181,7 @@ public class PathFinderTest {
         expectedIds1.add("_672CECB9-DE07-4FC6-92D3-4D89220BD4A5");
         expectedIds1.add("_1E638332-CC28-4860-8A76-57176630CD0E");
         expectedIds1.add("_54C8700A-063C-48F8-BCF6-8F2DB960B2E1");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_9702F903-708E-4AF0-B6BC-354C07E0EAD8");
         expectedIds2.add("_C4EBB271-64BA-4277-9348-6FA2946BAA55");
@@ -1209,38 +1209,38 @@ public class PathFinderTest {
         expectedIds2.add("_6F87EF2A-8C69-4F37-B9C5-6BB3AF86DC9F");
         expectedIds2.add("_34353A7C-0AAE-495E-948E-56D60DCC08A9");
         expectedIds2.add("_F1B53178-97DE-4E39-AD8D-4DBA8E19AE1D");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-SubProcessWithBoundaryEvent.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSubProcessWithBoundaryEvent");
     }
-    
-    
+
+
     @Test
     public void testExlusiveParallelSubProcessExclusive() throws IOException {
         List<String> expectedIds1 = new ArrayList<String>();
         expectedIds1.add("_B10F37EB-AD37-43AF-8415-C64D08FE77BB");
         expectedIds1.add("_426FBE47-2884-4FF2-B3B5-FCEE3724DD35");
         expectedIds1.add("_5A0E343E-C04E-4224-86B8-795F8AE7A0CD");
-        
+
         expectedIds1.add("_09DFCF76-949C-47A1-96A4-C473B1DE0B8E");
         expectedIds1.add("_E7288559-2673-4149-8CB8-B78D243574EA");
         expectedIds1.add("_6E733C7F-A931-4B0C-965C-23F27E8AEC19");
-        
+
         expectedIds1.add("_07421479-3F76-4B7B-BF38-96E8FB3CD63C");
         expectedIds1.add("_EC402AA3-C268-46B1-8A8A-2DBDE9DE38DF");
         expectedIds1.add("_CA7F0E1C-F4B1-4071-B7EC-9307469F9EA2");
@@ -1254,16 +1254,16 @@ public class PathFinderTest {
         expectedIds1.add("_00F715EB-4C13-44DC-A8C5-A3FEB38EC5FD");
         expectedIds1.add("_B1482DDF-5FDD-4C57-BA2D-0E7089A1C6AB");
         expectedIds1.add("_944EFC7C-CBF4-43CC-A28B-C4F470EE2AE9");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_B10F37EB-AD37-43AF-8415-C64D08FE77BB");
         expectedIds2.add("_426FBE47-2884-4FF2-B3B5-FCEE3724DD35");
         expectedIds2.add("_5A0E343E-C04E-4224-86B8-795F8AE7A0CD");
-        
+
         expectedIds2.add("_09DFCF76-949C-47A1-96A4-C473B1DE0B8E");
         expectedIds2.add("_E7288559-2673-4149-8CB8-B78D243574EA");
         expectedIds2.add("_6E733C7F-A931-4B0C-965C-23F27E8AEC19");
-        
+
         expectedIds2.add("_07421479-3F76-4B7B-BF38-96E8FB3CD63C");
         expectedIds2.add("_EC402AA3-C268-46B1-8A8A-2DBDE9DE38DF");
         expectedIds2.add("_CA7F0E1C-F4B1-4071-B7EC-9307469F9EA2");
@@ -1277,8 +1277,8 @@ public class PathFinderTest {
         expectedIds2.add("_00F715EB-4C13-44DC-A8C5-A3FEB38EC5FD");
         expectedIds2.add("_B1482DDF-5FDD-4C57-BA2D-0E7089A1C6AB");
         expectedIds2.add("_944EFC7C-CBF4-43CC-A28B-C4F470EE2AE9");
-        
-        
+
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_B10F37EB-AD37-43AF-8415-C64D08FE77BB");
         expectedIds3.add("_426FBE47-2884-4FF2-B3B5-FCEE3724DD35");
@@ -1308,8 +1308,8 @@ public class PathFinderTest {
         expectedIds3.add("_00F715EB-4C13-44DC-A8C5-A3FEB38EC5FD");
         expectedIds3.add("_B1482DDF-5FDD-4C57-BA2D-0E7089A1C6AB");
         expectedIds3.add("_944EFC7C-CBF4-43CC-A28B-C4F470EE2AE9");
-        
-        
+
+
         List<String> expectedIds4 = new ArrayList<String>();
         expectedIds4.add("_B10F37EB-AD37-43AF-8415-C64D08FE77BB");
         expectedIds4.add("_426FBE47-2884-4FF2-B3B5-FCEE3724DD35");
@@ -1339,26 +1339,26 @@ public class PathFinderTest {
         expectedIds4.add("_00F715EB-4C13-44DC-A8C5-A3FEB38EC5FD");
         expectedIds4.add("_B1482DDF-5FDD-4C57-BA2D-0E7089A1C6AB");
         expectedIds4.add("_944EFC7C-CBF4-43CC-A28B-C4F470EE2AE9");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ExlusiveParallelSubProcessExclusive.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(4, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3, expectedIds4));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(4, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(4, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, null, "testExlusiveParallelSubProcessExclusive");
     }
-    
+
     @Test
     public void testTwoExclusiveGatewaysWithParallelNoConverge() throws IOException {
         List<String> expectedIds1 = new ArrayList<String>();
@@ -1381,7 +1381,7 @@ public class PathFinderTest {
         expectedIds1.add("_ED6BE474-D35E-4CFC-A6A7-FCBE6320F2B0");
         expectedIds1.add("_9B9D2842-F4EA-4DC1-A88E-5806B9779469");
         expectedIds1.add("_A26091BA-D379-47A6-8168-443FAA3E77D0");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_EBE8D216-E512-4816-B114-404D5A639059");
         expectedIds2.add("_2EB882A4-5B7A-4D3C-A414-A1D31F65AB7E");
@@ -1402,8 +1402,8 @@ public class PathFinderTest {
         expectedIds2.add("_ED6BE474-D35E-4CFC-A6A7-FCBE6320F2B0");
         expectedIds2.add("_9B9D2842-F4EA-4DC1-A88E-5806B9779469");
         expectedIds2.add("_A26091BA-D379-47A6-8168-443FAA3E77D0");
-        
-        
+
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_EBE8D216-E512-4816-B114-404D5A639059");
         expectedIds3.add("_2EB882A4-5B7A-4D3C-A414-A1D31F65AB7E");
@@ -1432,8 +1432,8 @@ public class PathFinderTest {
         expectedIds3.add("_ED6BE474-D35E-4CFC-A6A7-FCBE6320F2B0");
         expectedIds3.add("_9B9D2842-F4EA-4DC1-A88E-5806B9779469");
         expectedIds3.add("_A26091BA-D379-47A6-8168-443FAA3E77D0");
-        
-        
+
+
         List<String> expectedIds4 = new ArrayList<String>();
         expectedIds4.add("_EBE8D216-E512-4816-B114-404D5A639059");
         expectedIds4.add("_2EB882A4-5B7A-4D3C-A414-A1D31F65AB7E");
@@ -1462,7 +1462,7 @@ public class PathFinderTest {
         expectedIds4.add("_ED6BE474-D35E-4CFC-A6A7-FCBE6320F2B0");
         expectedIds4.add("_9B9D2842-F4EA-4DC1-A88E-5806B9779469");
         expectedIds4.add("_A26091BA-D379-47A6-8168-443FAA3E77D0");
-        
+
         List<String> expectedIds5 = new ArrayList<String>();
         expectedIds5.add("_EBE8D216-E512-4816-B114-404D5A639059");
         expectedIds5.add("_2EB882A4-5B7A-4D3C-A414-A1D31F65AB7E");
@@ -1471,26 +1471,26 @@ public class PathFinderTest {
         expectedIds5.add("_9729B55E-F82C-4F56-BF57-032316F2B571");
         expectedIds5.add("_48D31865-0804-472D-AA63-CC40CA7144DE");
         expectedIds5.add("_6FDDC341-F043-4648-BBAE-48CA8602853B");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-TwoExclusiveGatewaysWithParallelNoConverge.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
 
         assertNotNull(paths);
         assertEquals(5, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds1, expectedIds2, expectedIds3, expectedIds4, expectedIds5));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(5, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(5, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, null, "testTwoExclusiveGatewaysWithParallelNoConverge");
     }
-    
+
     @Test
     public void testExlusiveGatewayWithSignal() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -1505,7 +1505,7 @@ public class PathFinderTest {
         expectedIds.add("_A3A4D425-38FC-4CFF-AA48-D67FD31778F1");
         expectedIds.add("_89B3D7B3-C5B6-42DD-B24D-90600A2B43D3");
         expectedIds.add("_8D87C582-C894-4A46-B8E0-0B13B2F9FD3A");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_FE412B85-210C-4D30-83DE-11AF100F948D");
         expectedIds2.add("_09718EFF-A759-4DB0-BED8-98B88603E187");
@@ -1518,7 +1518,7 @@ public class PathFinderTest {
         expectedIds2.add("_A3A4D425-38FC-4CFF-AA48-D67FD31778F1");
         expectedIds2.add("_89B3D7B3-C5B6-42DD-B24D-90600A2B43D3");
         expectedIds2.add("_8D87C582-C894-4A46-B8E0-0B13B2F9FD3A");
-        
+
         List<String> expectedIds3 = new ArrayList<String>();
         expectedIds3.add("_5E99421F-F4D4-4E15-9CCB-5E43AD43312A");
         expectedIds3.add("_555C6DE6-A561-4216-8203-82E3780314C4");
@@ -1529,27 +1529,27 @@ public class PathFinderTest {
         expectedIds3.add("_A3A4D425-38FC-4CFF-AA48-D67FD31778F1");
         expectedIds3.add("_89B3D7B3-C5B6-42DD-B24D-90600A2B43D3");
         expectedIds3.add("_8D87C582-C894-4A46-B8E0-0B13B2F9FD3A");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ExclusiveGatewayWithSignalEvent.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(3, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds, expectedIds2, expectedIds3));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(3, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(3, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testExlusiveGatewayWithSignal");
-       
+
     }
-    
+
     @Test
     public void testParallelGatewayWithSignal() throws IOException {
         List<String> expectedIds = new ArrayList<String>();
@@ -1560,7 +1560,7 @@ public class PathFinderTest {
         expectedIds.add("_49643815-E0D9-4463-AFEF-667C6CD7BFDE");
         expectedIds.add("_E95C2CAF-4A0C-43AD-8C3C-25575605754B");
         expectedIds.add("_60AAE88C-51BD-456D-A358-86D8D6F56EFC");
-        
+
         List<String> expectedIds2 = new ArrayList<String>();
         expectedIds2.add("_06465A9A-5FD0-4B16-84CA-2FC4EAA62C4F");
         expectedIds2.add("_E83A0C9A-5E92-445F-8AA4-FA2FBE473B50");
@@ -1569,25 +1569,25 @@ public class PathFinderTest {
         expectedIds2.add("_49643815-E0D9-4463-AFEF-667C6CD7BFDE");
         expectedIds2.add("_E95C2CAF-4A0C-43AD-8C3C-25575605754B");
         expectedIds2.add("_60AAE88C-51BD-456D-A358-86D8D6F56EFC");
-        
+
         PathFinder finder = PathFinderFactory.getInstance(this.getClass().getResourceAsStream("/BPMN2-ParallelGatewayWithSignal.bpmn2"));
-        
+
         List<PathContext> paths = finder.findPaths();
-        
+
         assertNotNull(paths);
         assertEquals(2, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds, expectedIds2));
-        
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(2, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(2, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
-        
+
         TestUtils.printOutPaths(paths, jsonPaths, "testSinglePath");
-       
+
     }
 
 
@@ -1602,11 +1602,11 @@ public class PathFinderTest {
         assertNotNull(paths);
         assertEquals(6, paths.size());
 
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(6, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(6, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
 
@@ -1630,11 +1630,11 @@ public class PathFinderTest {
             assertEquals(15, context.getPathElements().size());
         }
 
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(4, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(4, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
 
@@ -1684,11 +1684,11 @@ public class PathFinderTest {
         assertEquals(3, paths.size());
         assertTrue(TestUtils.matchExpected(paths, expectedIds, expectedIds2, expectedIds3));
 
-        JSONObject jsonPaths = new JSONPathFormatConverter().convert(paths);
+        JsonObject jsonPaths = new JSONPathFormatConverter().convert(paths);
         assertNotNull(jsonPaths);
         try {
-            assertEquals(3, ((JSONObject)jsonPaths.get("paths")).length());
-        } catch (JSONException e) {
+            assertEquals(3, jsonPaths.get("paths").getAsJsonObject().size());
+        } catch (JsonIOException e) {
             fail(e.getMessage());
         }
 
