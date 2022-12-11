@@ -1,0 +1,5 @@
+site_name: SmartCLIDE Workflows jBPM
+repo_url: https://github.com/eclipse-opensmartclide/kie-wb-common/tree/SmartCLIDE-addons
+
+nav:
+  - jBPM: 'index.md'
