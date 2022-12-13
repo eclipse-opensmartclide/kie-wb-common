@@ -92,6 +92,10 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private static String keycloakToken = "";
 
+    Row SmartCLIDERowInner3 = new Row();
+    Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
+    ListGroup listGroup= new ListGroup();
+
     public void changeKeycloakToken(String keycloakToken){
         this.keycloakToken = keycloakToken;
         printToken("Assigned new token: " + keycloakToken);
@@ -171,7 +175,6 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         //Add click listener for service search
         btnSearch.addClickHandler(clickEvent -> {
             //Create List with ListItems
-            ListGroup listGroup= new ListGroup();
             listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
 
             printToken("Token for request is: " + keycloakToken);
@@ -184,6 +187,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 Request response = builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) { }
                     public void onResponseReceived(Request request, Response response) {
+                        listGroup.clear();
+
                         String sss= response.getText();
                         JSONArray jsonArray = (JSONArray) JSONParser.parse(sss);
 
@@ -272,8 +277,6 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             }
 
             //Row for List
-            Row SmartCLIDERowInner3 = new Row();
-            Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
             SmartCLIDERowInner3.add(SmartCLIDEColumnInner3);
             SmartCLIDEColumnInner3.add(listGroup);
             SmartCLIDEColumnSearch.add(SmartCLIDERowInner3);

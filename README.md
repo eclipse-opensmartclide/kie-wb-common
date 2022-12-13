@@ -1,3 +1,9 @@
+SmartCLIDE workflows and jBPM
+==========================
+
+SmartCLIDE uses jBPM as a BPMN editor for the creation, maintains, and even deployment of workflows.
+You can find [here](docs/index.md) more information regarding the usage of jBPM inside the SmartCLIDE IDE.
+
 Developing Drools and jBPM
 ==========================
 
