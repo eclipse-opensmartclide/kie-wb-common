@@ -2,4 +2,6 @@ site_name: SmartCLIDE Workflows jBPM
 repo_url: https://github.com/eclipse-opensmartclide/kie-wb-common/tree/SmartCLIDE-addons
 
 nav:
-  - jBPM: 'index.md'
+  - Getting Started: 'index.md'
+  - Example 1: 'example1.md'
+  - Example 2: 'example2.md'
