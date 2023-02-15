@@ -351,13 +351,13 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     }
 
     public static native void postMessage() /*-{
-      $wnd.parent.postMessage({type: 1}, "*");
+      $wnd.parent.postMessage({type: 0}, "*");
     }-*/;
     public static native void listenerForMessage(ActivityDataIOEditorViewImpl x) /*-{
       $wnd.onmessage = function(e) {
         if(typeof(e.data) === 'object' && 'type' in e.data){
-            console.log("RECEIVED " + e.data.content);
-            x.@org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl::changeKeycloakToken(Ljava/lang/String;)(e.data.content);
+            console.log("RECEIVED " + e.data.content.token);
+            x.@org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl::changeKeycloakToken(Ljava/lang/String;)(e.data.content.token);
         }
       }
     }-*/;
