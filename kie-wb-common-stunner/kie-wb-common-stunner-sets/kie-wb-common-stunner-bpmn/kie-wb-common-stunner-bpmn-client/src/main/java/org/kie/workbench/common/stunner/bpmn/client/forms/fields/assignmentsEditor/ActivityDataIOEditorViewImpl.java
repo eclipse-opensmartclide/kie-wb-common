@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
@@ -93,6 +94,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private static String keycloakToken = "";
 
+    private static String userID = "";
+
     Row SmartCLIDERowInner3 = new Row();
     Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
     Column SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
@@ -100,7 +103,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     public void changeKeycloakToken(String keycloakToken){
         this.keycloakToken = keycloakToken;
-        printToken("Assigned new token: " + keycloakToken);
+        printFrontEnd("Assigned new token: " + keycloakToken);
     }
 
     @Inject
@@ -179,7 +182,20 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             //Create List with ListItems
             listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
 
-            printToken("Token for request is: " + keycloakToken);
+            printFrontEnd("Token for request is: " + keycloakToken);
+
+            //Get User ID
+            String[] chunks = keycloakToken.split("\\.");
+            Base64.Decoder decoder = Base64.getUrlDecoder();
+            String payload = new String(decoder.decode(chunks[1]));
+            printFrontEnd("Payload of Token is: " + payload);
+            try{
+                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
+                this.userID = jsonObject.get("sub").toString();
+                printFrontEnd("User ID: " + this.userID);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             //Call Service Discovery API
             try {
@@ -292,7 +308,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 String fullName = jsonObject.get("name").toString().substring(1, jsonObject.get("name").toString().length() - 1);
                 String description = jsonObject.get("description").toString().substring(1, jsonObject.get("description").toString().length() - 1);
                 String link = jsonObject.get("url").toString().substring(1, jsonObject.get("url").toString().length() - 1);
-                Boolean is_public = ((JSONBoolean) jsonObject.get("is_public").isBoolean()).booleanValue();
+                String user_id = jsonObject.get("user_id").toString().substring(1, jsonObject.get("user_id").toString().length() - 1);
                 String workspace_id = jsonObject.get("workspace_id").toString().substring(1, jsonObject.get("workspace_id").toString().length() - 1);
 
                 ListGroupItem listGroupItem1 = new ListGroupItem();
@@ -345,11 +361,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
                 divInner2.add(btnFetch);
 
-                /**
-                 * Not sure if it has to be his/her own services
-                 * and not just public ones
-                 */
-                if(is_public && !workspace_id.equals("")) {
+                //Add button for Develop for the users services
+                if(user_id.equals(userID) && !workspace_id.equals("")) {
                     Button btnUse = new Button("Develop");
                     btnUse.addClickHandler(clickEvent1 -> {
                         Window.open(urlTheia + "/project/"+workspace_id,"_blank","");
@@ -399,8 +412,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         }
       }
     }-*/;
-    public static native void printToken(String token) /*-{
-      console.log("Token is: "+ token);
+    public static native void printFrontEnd(String token) /*-{
+      console.log(""+ token);
     }-*/;
 
     @Override
