@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor;
 
-import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
@@ -184,17 +183,17 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             printFrontEnd("Token for request is: " + keycloakToken);
 
             //Get User ID
-            String[] chunks = keycloakToken.split("\\.");
-            Base64.Decoder decoder = Base64.getUrlDecoder();
-            String payload = new String(decoder.decode(chunks[1]));
-            printFrontEnd("Payload of Token is: " + payload);
-            try{
-                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
-                this.userID = jsonObject.get("sub").toString();
-                printFrontEnd("User ID: " + this.userID);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+//            String[] chunks = keycloakToken.split("\\.");
+//            Base64.Decoder decoder = Base64.getUrlDecoder();
+//            String payload = new String(decoder.decode(chunks[1]));
+//            printFrontEnd("Payload of Token is: " + payload);
+//            try{
+//                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
+//                this.userID = jsonObject.get("sub").toString();
+//                printFrontEnd("User ID: " + this.userID);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
 
             //Call Service Discovery API
             try {
@@ -361,21 +360,21 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 divInner2.add(btnFetch);
 
                 //Add button for Develop for the users services
-                if(user_id.equals(userID) && !workspace_id.equals("")) {
-                    Button btnUse = new Button("Develop");
-                    btnUse.addClickHandler(clickEvent1 -> {
-                        Window.open(urlTheia + "/project/"+workspace_id,"_blank","");
-//                                //add assignment to variable
-//                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
-//                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
-//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
-//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
-//                                    }
-//                                }
-//                            });
-                    });
-                    divInner2.add(btnUse);
-                }
+//                if(user_id.equals(userID) && !workspace_id.equals("")) {
+//                    Button btnUse = new Button("Develop");
+//                    btnUse.addClickHandler(clickEvent1 -> {
+//                        Window.open(urlTheia + "/project/"+workspace_id,"_blank","");
+////                                //add assignment to variable
+////                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
+////                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
+////                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
+////                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
+////                                    }
+////                                }
+////                            });
+//                    });
+//                    divInner2.add(btnUse);
+//                }
                 divOuter.add(divInner2);
                 listGroupItem1.add(divOuter);
                 listGroup.add(listGroupItem1);
