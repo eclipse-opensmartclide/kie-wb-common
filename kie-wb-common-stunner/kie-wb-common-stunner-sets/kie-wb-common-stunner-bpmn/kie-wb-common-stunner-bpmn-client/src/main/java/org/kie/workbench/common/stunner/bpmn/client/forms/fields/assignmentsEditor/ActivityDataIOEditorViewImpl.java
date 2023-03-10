@@ -92,13 +92,16 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private static String keycloakToken = "";
 
+    private static String userID = "";
+
     Row SmartCLIDERowInner3 = new Row();
     Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
+    Column SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
     ListGroup listGroup= new ListGroup();
 
     public void changeKeycloakToken(String keycloakToken){
         this.keycloakToken = keycloakToken;
-        printToken("Assigned new token: " + keycloakToken);
+        printFrontEnd("Assigned new token: " + keycloakToken);
     }
 
     @Inject
@@ -145,7 +148,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         SmartCLIDERowSearch = new Row();
         SmartCLIDERowSearch.getElement().getStyle().setMarginTop(10, Style.Unit.PX);
         SmartCLIDERowSearch.getElement().getStyle().setDisplay(Style.Display.NONE);
-        final Column SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
+        SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
         SmartCLIDERowSearch.add(SmartCLIDEColumnSearch);
 
         //Row for Service Discovery label
@@ -177,7 +180,20 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             //Create List with ListItems
             listGroup.getElement().setAttribute("style","margin-bottom: 0px;");
 
-            printToken("Token for request is: " + keycloakToken);
+            printFrontEnd("Token for request is: " + keycloakToken);
+
+            //Get User ID
+//            String[] chunks = keycloakToken.split("\\.");
+//            Base64.Decoder decoder = Base64.getUrlDecoder();
+//            String payload = new String(decoder.decode(chunks[1]));
+//            printFrontEnd("Payload of Token is: " + payload);
+//            try{
+//                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
+//                this.userID = jsonObject.get("sub").toString();
+//                printFrontEnd("User ID: " + this.userID);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
 
             //Call Service Discovery API
             try {
@@ -187,8 +203,6 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 Request response = builder.sendRequest(null, new RequestCallback() {
                     public void onError(Request request, Throwable exception) { }
                     public void onResponseReceived(Request request, Response response) {
-                        listGroup.clear();
-
                         String sss= response.getText();
                         JSONArray jsonArray = (JSONArray) JSONParser.parse(sss);
 
@@ -197,80 +211,8 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             sizeResp=10;
                         }
 
-                        //For each service create a List Item
-                        for(int i=0; i<sizeResp; i++) {
-                            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                            String id = jsonObject.get("id").toString().substring(1, jsonObject.get("id").toString().length()-1);
-                            String fullName = jsonObject.get("name").toString().substring(1, jsonObject.get("name").toString().length()-1);
-                            String description = jsonObject.get("description").toString().substring(1, jsonObject.get("description").toString().length()-1);
-                            String link = jsonObject.get("url").toString().substring(1, jsonObject.get("url").toString().length()-1);
-
-                            ListGroupItem listGroupItem1= new ListGroupItem();
-                            Div divOuter = new Div();
-                            divOuter.getElement().setAttribute("style","display: flex; justify-content: space-between;");
-                            Div divInner1 = new Div();
-                            Span spanName = new Span();
-                            spanName.setText(fullName);
-                            spanName.getElement().setAttribute("style","font-size: 13px; font-weight: bold; margin-right: 5px;");
-                            Anchor anchor = new Anchor("("+ link +")",link);
-                            anchor.getElement().setAttribute("target","_blank");
-//                            Span spanScore = new Span();
-//                            spanScore.setText("score: " + score);
-//                            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
-//                            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-                            Span spanDescriptionOuter = new Span();
-                            Span spanDescription = new Span();
-                            if(description.length() > 50){
-                                //if there are many chars in description add button for show more/less
-                                spanDescription.setText(description.substring(0,50));
-                                Button buttonMoreDescription = new Button("Show More");
-                                buttonMoreDescription.getElement().setAttribute("style", "background: none;" +
-                                        " color: inherit; border: none; padding: 0; font: inherit;" +
-                                        " cursor: pointer; outline: inherit; font-weight: bold;" +
-                                        " padding-bottom: 2px; color: #0088ce; box-shadow: none; margin-left: 5px;");
-                                buttonMoreDescription.addClickHandler(clickEvent1 -> {
-                                    if(buttonMoreDescription.getText().equals("Show More")) {
-                                        spanDescription.setText(description);
-                                        buttonMoreDescription.setText("Show Less");
-                                    }
-                                    else{
-                                        spanDescription.setText(description.substring(0,50));
-                                        buttonMoreDescription.setText("Show More");
-                                    }
-                                });
-                                spanDescriptionOuter.add(spanDescription);
-                                spanDescriptionOuter.add(buttonMoreDescription);
-                            }
-                            else{
-                                spanDescription.setText(description);
-                                spanDescriptionOuter.add(spanDescription);
-                            }
-                            spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
-                            divInner1.add(spanName);
-                            divInner1.add(anchor);
-//                            divInner1.add(spanScore);
-                            divInner1.add(spanDescriptionOuter);
-                            divOuter.add(divInner1);
-                            Div divInner2 = new Div();
-                            divInner2.getElement().setAttribute("style","display: flex; flex-direction: column; justify-content: space-around;");
-                            Button btnFetch = new Button("Fetch code");
-                            btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia+"?serviceID="+id,"_blank",""));
-//                            Button btnUse = new Button("Use");
-//                            btnUse.addClickHandler(clickEvent1 -> {
-//                                //add assignment to variable
-//                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
-//                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
-//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
-//                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
-//                                    }
-//                                }
-//                            });
-                            divInner2.add(btnFetch);
-//                            divInner2.add(btnUse);
-                            divOuter.add(divInner2);
-                            listGroupItem1.add(divOuter);
-                            listGroup.add(listGroupItem1);
-                        }}
+                        createReturnedServicesList(jsonArray, sizeResp);
+                    }
                  });
             } catch (RequestException e) {
                 e.printStackTrace();
@@ -350,19 +292,126 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         setBody(container);
     }
 
+    private void createReturnedServicesList(JSONArray jsonArray, int sizeResp) {
+        listGroup.clear();
+        SmartCLIDERowInner3 = new Row();
+        SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
+        SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
+
+        //For each service create a List Item
+        for(int i = 0; i< sizeResp; i++) {
+            if(jsonArray.size() > i) {
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                String id = jsonObject.get("id").toString().substring(1, jsonObject.get("id").toString().length() - 1);
+                String fullName = jsonObject.get("name").toString().substring(1, jsonObject.get("name").toString().length() - 1);
+                String description = jsonObject.get("description").toString().substring(1, jsonObject.get("description").toString().length() - 1);
+                String link = jsonObject.get("url").toString().substring(1, jsonObject.get("url").toString().length() - 1);
+                String user_id = jsonObject.get("user_id").toString().substring(1, jsonObject.get("user_id").toString().length() - 1);
+                String workspace_id = jsonObject.get("workspace_id").toString().substring(1, jsonObject.get("workspace_id").toString().length() - 1);
+
+                ListGroupItem listGroupItem1 = new ListGroupItem();
+                Div divOuter = new Div();
+                divOuter.getElement().setAttribute("style", "display: flex; justify-content: space-between;");
+                Div divInner1 = new Div();
+                Span spanName = new Span();
+                spanName.setText(fullName);
+                spanName.getElement().setAttribute("style", "font-size: 13px; font-weight: bold; margin-right: 5px;");
+                Anchor anchor = new Anchor("(" + link + ")", link);
+                anchor.getElement().setAttribute("target", "_blank");
+//                            Span spanScore = new Span();
+//                            spanScore.setText("score: " + score);
+//                            spanScore.getElement().getStyle().setFontStyle(Style.FontStyle.ITALIC);
+//                            spanScore.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                Span spanDescriptionOuter = new Span();
+                Span spanDescription = new Span();
+                if (description.length() > 50) {
+                    //if there are many chars in description add button for show more/less
+                    spanDescription.setText(description.substring(0, 50));
+                    Button buttonMoreDescription = new Button("Show More");
+                    buttonMoreDescription.getElement().setAttribute("style", "background: none;" +
+                            " color: inherit; border: none; padding: 0; font: inherit;" +
+                            " cursor: pointer; outline: inherit; font-weight: bold;" +
+                            " padding-bottom: 2px; color: #0088ce; box-shadow: none; margin-left: 5px;");
+                    buttonMoreDescription.addClickHandler(clickEvent1 -> {
+                        if (buttonMoreDescription.getText().equals("Show More")) {
+                            spanDescription.setText(description);
+                            buttonMoreDescription.setText("Show Less");
+                        } else {
+                            spanDescription.setText(description.substring(0, 50));
+                            buttonMoreDescription.setText("Show More");
+                        }
+                    });
+                    spanDescriptionOuter.add(spanDescription);
+                    spanDescriptionOuter.add(buttonMoreDescription);
+                } else {
+                    spanDescription.setText(description);
+                    spanDescriptionOuter.add(spanDescription);
+                }
+                spanDescriptionOuter.getElement().getStyle().setDisplay(Style.Display.BLOCK);
+                divInner1.add(spanName);
+                divInner1.add(anchor);
+//                            divInner1.add(spanScore);
+                divInner1.add(spanDescriptionOuter);
+                divOuter.add(divInner1);
+                Div divInner2 = new Div();
+                divInner2.getElement().setAttribute("style", "display: flex; flex-direction: column; justify-content: space-around;");
+                Button btnFetch = new Button("Fetch code");
+                btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
+                divInner2.add(btnFetch);
+
+                //Add button for Develop for the users services
+//                if(user_id.equals(userID) && !workspace_id.equals("")) {
+//                    Button btnUse = new Button("Develop");
+//                    btnUse.addClickHandler(clickEvent1 -> {
+//                        Window.open(urlTheia + "/project/"+workspace_id,"_blank","");
+////                                //add assignment to variable
+////                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
+////                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
+////                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setExpression("GET");
+////                                        inputAssignmentsWidget.view.getAssignmentWidget(k).setProcessVarComboBoxText("GET");
+////                                    }
+////                                }
+////                            });
+//                    });
+//                    divInner2.add(btnUse);
+//                }
+                divOuter.add(divInner2);
+                listGroupItem1.add(divOuter);
+                listGroup.add(listGroupItem1);
+            }
+        }
+
+        //if there are more services add more button
+        if(jsonArray.size() > sizeResp){
+            Row SmartCLIDERowInner4 = new Row();
+            Column SmartCLIDEColumnInner4 = new Column(ColumnSize.MD_12);
+            SmartCLIDERowInner4.add(SmartCLIDEColumnInner4);
+
+            Button more = new Button("More");
+            more.getElement().getStyle().setBackgroundImage("linear-gradient(to bottom,rgb(53 181 191) 0,rgb(67 103 162) 100%)");
+            more.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
+            more.setPull(Pull.LEFT);
+            more.addClickHandler(clickEvent -> {
+                createReturnedServicesList(jsonArray, sizeResp+10);
+            });
+            SmartCLIDEColumnInner4.add(more);
+            SmartCLIDEColumnSearch.add(SmartCLIDEColumnInner4);
+        }
+    }
+
     public static native void postMessage() /*-{
-      $wnd.parent.postMessage({type: 1}, "*");
+      $wnd.parent.postMessage({type: 0}, "*");
     }-*/;
     public static native void listenerForMessage(ActivityDataIOEditorViewImpl x) /*-{
       $wnd.onmessage = function(e) {
         if(typeof(e.data) === 'object' && 'type' in e.data){
-            console.log("RECEIVED " + e.data.content);
-            x.@org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl::changeKeycloakToken(Ljava/lang/String;)(e.data.content);
+            console.log("RECEIVED " + e.data.content.token);
+            x.@org.kie.workbench.common.stunner.bpmn.client.forms.fields.assignmentsEditor.ActivityDataIOEditorViewImpl::changeKeycloakToken(Ljava/lang/String;)(e.data.content.token);
         }
       }
     }-*/;
-    public static native void printToken(String token) /*-{
-      console.log("Token is: "+ token);
+    public static native void printFrontEnd(String token) /*-{
+      console.log(""+ token);
     }-*/;
 
     @Override
