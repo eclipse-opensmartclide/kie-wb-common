@@ -294,9 +294,6 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private void createReturnedServicesList(JSONArray jsonArray, int sizeResp) {
         listGroup.clear();
-        SmartCLIDERowInner3 = new Row();
-        SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
-        SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
 
         //For each service create a List Item
         for(int i = 0; i< sizeResp; i++) {
