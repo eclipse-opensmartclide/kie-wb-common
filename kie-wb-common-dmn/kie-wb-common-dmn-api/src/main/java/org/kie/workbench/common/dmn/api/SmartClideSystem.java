@@ -24,4 +24,6 @@ public interface SmartClideSystem {
     String getTheiaURL();
 
     String getServiceDiscoveryURL();
+
+    String DecodeUserID(String token);
 }

@@ -183,17 +183,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             printFrontEnd("Token for request is: " + keycloakToken);
 
             //Get User ID
-//            String[] chunks = keycloakToken.split("\\.");
-//            Base64.Decoder decoder = Base64.getUrlDecoder();
-//            String payload = new String(decoder.decode(chunks[1]));
-//            printFrontEnd("Payload of Token is: " + payload);
-//            try{
-//                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
-//                this.userID = jsonObject.get("sub").toString();
-//                printFrontEnd("User ID: " + this.userID);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
+            smartClideSystem.call(new RemoteCallback<String>() {
+                @Override
+                public void callback(String s) {
+                    userID=s;
+                }
+            }).DecodeUserID(keycloakToken);
 
             //Call Service Discovery API
             try {
@@ -210,6 +205,9 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                         if(sizeResp>10){
                             sizeResp=10;
                         }
+
+                        //Test print user ID
+                        printFrontEnd("User ID: " + userID);
 
                         createReturnedServicesList(jsonArray, sizeResp, null);
                     }
