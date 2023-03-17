@@ -15,6 +15,10 @@
  */
 package org.kie.workbench.common.dmn.backend;
 
+import java.util.Base64;
+
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import org.kie.workbench.common.dmn.api.SmartClideSystem;
 
 public class SmartClideSystemImpl implements SmartClideSystem {
@@ -29,5 +33,16 @@ public class SmartClideSystemImpl implements SmartClideSystem {
     public String getServiceDiscoveryURL() {
         org.slf4j.LoggerFactory.getLogger(SmartClideSystemImpl.class).info(System.getProperty("smartclide.service.discovery.url"));
         return System.getProperty("smartclide.service.discovery.url");
+    }
+
+    @Override
+    public String DecodeUserID(String token) {
+        String[] chunks = token.split("\\.");
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String payload = new String(decoder.decode(chunks[1]));
+        JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
+        String userID = jsonObject.get("sub").toString();
+
+        return userID;
     }
 }

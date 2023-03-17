@@ -183,17 +183,12 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             printFrontEnd("Token for request is: " + keycloakToken);
 
             //Get User ID
-//            String[] chunks = keycloakToken.split("\\.");
-//            Base64.Decoder decoder = Base64.getUrlDecoder();
-//            String payload = new String(decoder.decode(chunks[1]));
-//            printFrontEnd("Payload of Token is: " + payload);
-//            try{
-//                JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
-//                this.userID = jsonObject.get("sub").toString();
-//                printFrontEnd("User ID: " + this.userID);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
+            smartClideSystem.call(new RemoteCallback<String>() {
+                @Override
+                public void callback(String s) {
+                    userID=s;
+                }
+            }).DecodeUserID(keycloakToken);
 
             //Call Service Discovery API
             try {
@@ -211,7 +206,10 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                             sizeResp=10;
                         }
 
-                        createReturnedServicesList(jsonArray, sizeResp);
+                        //Test print user ID
+                        printFrontEnd("User ID: " + userID);
+
+                        createReturnedServicesList(jsonArray, sizeResp, null);
                     }
                  });
             } catch (RequestException e) {
@@ -292,7 +290,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         setBody(container);
     }
 
-    private void createReturnedServicesList(JSONArray jsonArray, int sizeResp) {
+    private void createReturnedServicesList(JSONArray jsonArray, int sizeResp, Button moreButton) {
         listGroup.clear();
 
         //For each service create a List Item
@@ -379,7 +377,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
         }
 
         //if there are more services add more button
-        if(jsonArray.size() > sizeResp){
+        if(jsonArray.size() > sizeResp && sizeResp==10){
             Row SmartCLIDERowInner4 = new Row();
             Column SmartCLIDEColumnInner4 = new Column(ColumnSize.MD_12);
             SmartCLIDERowInner4.add(SmartCLIDEColumnInner4);
@@ -389,10 +387,13 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             more.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
             more.setPull(Pull.LEFT);
             more.addClickHandler(clickEvent -> {
-                createReturnedServicesList(jsonArray, sizeResp+10);
+                createReturnedServicesList(jsonArray, sizeResp+10, more);
             });
             SmartCLIDEColumnInner4.add(more);
             SmartCLIDEColumnSearch.add(SmartCLIDEColumnInner4);
+        }
+        else if(jsonArray.size() < sizeResp && moreButton!=null) {
+            SmartCLIDEColumnSearch.remove(moreButton);
         }
     }
 
