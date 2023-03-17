@@ -15,11 +15,11 @@
  */
 package org.kie.workbench.common.dmn.backend;
 
+import java.util.Base64;
+
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import org.kie.workbench.common.dmn.api.SmartClideSystem;
-
-import java.util.Base64;
 
 public class SmartClideSystemImpl implements SmartClideSystem {
 
