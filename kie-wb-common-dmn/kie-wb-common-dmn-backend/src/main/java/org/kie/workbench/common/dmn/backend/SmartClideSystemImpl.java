@@ -17,8 +17,6 @@ package org.kie.workbench.common.dmn.backend;
 
 import java.util.Base64;
 
-import com.unboundid.util.json.JSONException;
-import com.unboundid.util.json.JSONObject;
 import org.kie.workbench.common.dmn.api.SmartClideSystem;
 
 public class SmartClideSystemImpl implements SmartClideSystem {
