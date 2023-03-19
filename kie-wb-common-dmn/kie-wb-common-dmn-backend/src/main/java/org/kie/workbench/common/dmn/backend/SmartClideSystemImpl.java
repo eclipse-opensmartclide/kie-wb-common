@@ -17,8 +17,8 @@ package org.kie.workbench.common.dmn.backend;
 
 import java.util.Base64;
 
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
+import com.unboundid.util.json.JSONException;
+import com.unboundid.util.json.JSONObject;
 import org.kie.workbench.common.dmn.api.SmartClideSystem;
 
 public class SmartClideSystemImpl implements SmartClideSystem {
@@ -40,9 +40,7 @@ public class SmartClideSystemImpl implements SmartClideSystem {
         String[] chunks = token.split("\\.");
         Base64.Decoder decoder = Base64.getUrlDecoder();
         String payload = new String(decoder.decode(chunks[1]));
-        JSONObject jsonObject = (JSONObject) JSONParser.parse(payload);
-        String userID = jsonObject.get("sub").toString();
-
+        String userID= payload.replaceAll(".*(\"sub\":\")","").replaceAll("(\").*","");
         return userID;
     }
 }
