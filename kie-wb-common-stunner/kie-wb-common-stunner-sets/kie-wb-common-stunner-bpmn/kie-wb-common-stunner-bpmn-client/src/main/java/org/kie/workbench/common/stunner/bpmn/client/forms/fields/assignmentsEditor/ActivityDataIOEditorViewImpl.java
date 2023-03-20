@@ -352,9 +352,11 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 divOuter.add(divInner1);
                 Div divInner2 = new Div();
                 divInner2.getElement().setAttribute("style", "display: flex; flex-direction: column; justify-content: space-around;");
-                Button btnFetch = new Button("Fetch code");
-                btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
-                divInner2.add(btnFetch);
+                if( !link.startsWith("https://www.programmableweb.com") ) {
+                    Button btnFetch = new Button("Fetch code");
+                    btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
+                    divInner2.add(btnFetch);
+                }
 
                 //Add button for Develop for the users services
                 if(user_id.equals(userID) && !workspace_id.equals("")) {
