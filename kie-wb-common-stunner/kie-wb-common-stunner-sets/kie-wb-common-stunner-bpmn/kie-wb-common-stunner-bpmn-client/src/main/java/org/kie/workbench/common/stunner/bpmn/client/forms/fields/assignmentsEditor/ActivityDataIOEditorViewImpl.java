@@ -98,6 +98,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
     Column SmartCLIDEColumnInner3 = new Column(ColumnSize.MD_12);
     Column SmartCLIDEColumnSearch = new Column(ColumnSize.MD_12);
     ListGroup listGroup= new ListGroup();
+    int servicesListSize=0;
 
     public void changeKeycloakToken(String keycloakToken){
         this.keycloakToken = keycloakToken;
@@ -292,6 +293,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
 
     private void createReturnedServicesList(JSONArray jsonArray, int sizeResp, Button moreButton) {
         listGroup.clear();
+        servicesListSize=0;
 
         //For each service create a List Item
         for(int i = 0; i< sizeResp; i++) {
@@ -350,15 +352,17 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 divOuter.add(divInner1);
                 Div divInner2 = new Div();
                 divInner2.getElement().setAttribute("style", "display: flex; flex-direction: column; justify-content: space-around;");
-                Button btnFetch = new Button("Fetch code");
-                btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
-                divInner2.add(btnFetch);
+                if( !link.startsWith("https://www.programmableweb.com") ) {
+                    Button btnFetch = new Button("Fetch code");
+                    btnFetch.addClickHandler(clickEvent1 -> Window.open(urlTheia + "?serviceID=" + id, "_blank", ""));
+                    divInner2.add(btnFetch);
+                }
 
                 //Add button for Develop for the users services
                 if(user_id.equals(userID) && !workspace_id.equals("")) {
                     Button btnUse = new Button("Develop");
                     btnUse.addClickHandler(clickEvent1 -> {
-                        Window.open(urlTheia + "/project/"+workspace_id,"_blank","");
+                        Window.open(urlTheia.replace("/services/serviceCreation","") + "/project/"+workspace_id,"_blank","");
 //                                //add assignment to variable
 //                                for(int k=0; k<inputAssignmentsWidget.view.getAssignmentsCount(); k++){
 //                                    if(inputAssignmentsWidget.view.getAssignmentRows().get(k).getName().equals("Method")){
@@ -373,6 +377,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
                 divOuter.add(divInner2);
                 listGroupItem1.add(divOuter);
                 listGroup.add(listGroupItem1);
+                servicesListSize++;
             }
         }
 
@@ -387,12 +392,7 @@ public class ActivityDataIOEditorViewImpl extends BaseModal implements ActivityD
             more.getElement().getStyle().setMarginLeft(20, Style.Unit.PX);
             more.setPull(Pull.LEFT);
             more.addClickHandler(clickEvent -> {
-                int i = 0;
-                while(listGroup.iterator().hasNext()) {
-                    i++;
-                    listGroup.iterator().next();
-                }
-                createReturnedServicesList(jsonArray, i+10, more);
+                createReturnedServicesList(jsonArray, servicesListSize+10, more);
             });
             SmartCLIDEColumnInner4.add(more);
             SmartCLIDEColumnSearch.add(SmartCLIDEColumnInner4);
